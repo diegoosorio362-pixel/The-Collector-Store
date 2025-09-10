@@ -936,7 +936,7 @@
                                 <h3>Goku Super Saiyan</h3>
                                 <p>La figura más poderosa de la colección</p>
                                 <div class="slide-price">$89.99</div>
-                                <button class="btn btn-primary" onclick="addToCart(1)">🛒 Agregar al Carrito</button>
+                                <button class="btn btn-primary" onclick="addToCart(1)">📦 Agregar al Carrito</button>
                             </div>
                         </div>
                     </div>
@@ -949,7 +949,7 @@
                                 <h3>Esfera del Dragón</h3>
                                 <p>Replica auténtica de 4 estrellas</p>
                                 <div class="slide-price">$45.99</div>
-                                <button class="btn btn-primary" onclick="addToCart(2)">🛒 Agregar al Carrito</button>
+                                <button class="btn btn-primary" onclick="addToCart(2)">📦 Agregar al Carrito</button>
                             </div>
                         </div>
                     </div>
@@ -962,7 +962,7 @@
                                 <h3>Vegeta Prince</h3>
                                 <p>El Príncipe de los Saiyajin</p>
                                 <div class="slide-price">$79.99</div>
-                                <button class="btn btn-primary" onclick="addToCart(3)">🛒 Agregar al Carrito</button>
+                                <button class="btn btn-primary" onclick="addToCart(3)">📦 Agregar al Carrito</button>
                             </div>
                         </div>
                     </div>
@@ -1308,7 +1308,7 @@
             filteredProducts.forEach(product => {
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
-                productCard.innerHTML = `<img src="${product.image}" alt="${product.name}" class="product-image"><div class="product-info"><h3 class="product-title">${product.name}</h3><p class="product-description">${product.description}</p><div class="product-price">$${product.price.toFixed(2)}</div><button class="add-to-cart" onclick="addToCart(${product.id})">🛒 Agregar al Carrito</button></div></div>`;
+                productCard.innerHTML = `<img src="${product.image}" alt="${product.name}" class="product-image"><div class="product-info"><h3 class="product-title">${product.name}</h3><p class="product-description">${product.description}</p><div class="product-price">$${product.price.toFixed(2)}</div><button class="add-to-cart" onclick="addToCart(${product.id})">📦 Agregar al Carrito</button></div></div>`;
                 productsGrid.appendChild(productCard);
             });
         }
@@ -1385,7 +1385,7 @@
         }
         function updateCartDisplay() {
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.querySelector('.nav-actions .btn').textContent = `🛒 Carrito (${totalItems})`;
+            document.querySelector('.nav-actions .btn').textContent = `📦 Carrito (${totalItems})`;
             
             const cartItems = document.getElementById('cartItems');
             const cartTotal = document.getElementById('cartTotal');
