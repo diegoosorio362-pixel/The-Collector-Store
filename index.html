@@ -809,17 +809,198 @@
             font-size: 0.9rem;
             opacity: 0.8;
         }
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1002; align-items: center; justify-content: center; }
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.6); 
+            backdrop-filter: blur(5px);
+            z-index: 1002; 
+            align-items: center; 
+            justify-content: center; 
+            animation: fadeIn 0.3s ease;
+        }
         .modal.active { display: flex; }
-        .modal-content { background: white; border-radius: 15px; width: 90%; max-width: 400px; overflow: hidden; }
-        .modal-header { padding: 1.5rem; border-bottom: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center; }
-        .modal-body { padding: 1.5rem; }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label { display: block; margin-bottom: 0.5rem; font-weight: 500; }
-        .form-group input { width: 100%; padding: 0.8rem; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 1rem; }
-        .form-group input:focus { outline: none; border-color: #ff6b35; }
-        .register-link { text-align: center; margin-top: 1rem; color: #666; }
-        .register-link a { color: #ff6b35; text-decoration: none; }
+        .modal-content { 
+            background: white; 
+            border-radius: 20px; 
+            width: 90%; 
+            max-width: 450px; 
+            overflow: hidden; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            animation: slideInUp 0.3s ease;
+        }
+        .modal-header { 
+            padding: 2rem; 
+            border-bottom: 2px solid #f0f0f0; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+        }
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        .modal-body { padding: 2rem; }
+        .form-group { margin-bottom: 1.5rem; }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 0.5rem; 
+            font-weight: 600; 
+            color: #333;
+            font-size: 0.9rem;
+        }
+        .form-group input { 
+            width: 100%; 
+            padding: 1rem; 
+            border: 2px solid #e0e0e0; 
+            border-radius: 12px; 
+            font-size: 1rem; 
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        .form-group input:focus { 
+            outline: none; 
+            border-color: #ff6b35; 
+            background: white;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+        .form-options {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        .remember-me input {
+            width: auto;
+            margin: 0;
+        }
+        .forgot-password {
+            color: #ff6b35;
+            text-decoration: none;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+        .modal-divider {
+            text-align: center;
+            margin: 1.5rem 0;
+            position: relative;
+        }
+        .modal-divider::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #e0e0e0;
+        }
+        .modal-divider span {
+            background: white;
+            padding: 0 1rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .social-login {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+        .btn-social {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: white;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .btn-social:hover {
+            border-color: #ff6b35;
+            background: #fafafa;
+            transform: translateY(-2px);
+        }
+        .btn-social.google:hover {
+            border-color: #4285f4;
+            background: #f8f9ff;
+        }
+        .btn-social.facebook:hover {
+            border-color: #1877f2;
+            background: #f0f7ff;
+        }
+        .register-link, .login-link { 
+            text-align: center; 
+            margin-top: 1rem; 
+            color: #666; 
+            font-size: 0.9rem;
+        }
+        .register-link a, .login-link a { 
+            color: #ff6b35; 
+            text-decoration: none; 
+            font-weight: 600;
+        }
+        .register-link a:hover, .login-link a:hover {
+            text-decoration: underline;
+        }
+        .terms-checkbox {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.4;
+        }
+        .terms-checkbox input {
+            width: auto;
+            margin: 0;
+            margin-top: 0.2rem;
+        }
+        .terms-checkbox a {
+            color: #ff6b35;
+            text-decoration: none;
+        }
+        .terms-checkbox a:hover {
+            text-decoration: underline;
+        }
+        .forgot-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            line-height: 1.5;
+        }
+        
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translate3d(0, 50px, 0);
+            }
+            to {
+                opacity: 1;
+                transform: translate3d(0, 0, 0);
+            }
+        }
         @media (max-width: 768px) { 
             .hero-content { grid-template-columns: 1fr; text-align: center; } 
             .hero-title { font-size: 2rem; } 
@@ -968,7 +1149,7 @@
                             <div class="slide-info">
                                 <h3>Goku Super Saiyan</h3>
                                 <p>La figura más poderosa de la colección</p>
-                                <div class="slide-price">$89.99</div>
+                                <div class="slide-price">${formatPrice(89.99)}</div>
                                 <button class="btn btn-primary" onclick="addToCart(1)">
                                     <img src="capsula.jpg" alt="Cápsula" style="width: 16px; height: 16px; margin-right: 0.5rem; border-radius: 50%; vertical-align: middle;">
                                     Agregar al Carrito
@@ -984,7 +1165,7 @@
                             <div class="slide-info">
                                 <h3>Esfera del Dragón</h3>
                                 <p>Replica auténtica de 4 estrellas</p>
-                                <div class="slide-price">$45.99</div>
+                                <div class="slide-price">${formatPrice(45.99)}</div>
                                 <button class="btn btn-primary" onclick="addToCart(2)">
                                     <img src="capsula.jpg" alt="Cápsula" style="width: 16px; height: 16px; margin-right: 0.5rem; border-radius: 50%; vertical-align: middle;">
                                     Agregar al Carrito
@@ -1000,7 +1181,7 @@
                             <div class="slide-info">
                                 <h3>Vegeta Prince</h3>
                                 <p>El Príncipe de los Saiyajin</p>
-                                <div class="slide-price">$79.99</div>
+                                <div class="slide-price">${formatPrice(79.99)}</div>
                                 <button class="btn btn-primary" onclick="addToCart(3)">
                                     <img src="capsula.jpg" alt="Cápsula" style="width: 16px; height: 16px; margin-right: 0.5rem; border-radius: 50%; vertical-align: middle;">
                                     Agregar al Carrito
@@ -1161,22 +1342,120 @@
     <div class="modal" id="loginModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Iniciar Sesión</h3>
+                <h3>🔐 Iniciar Sesión</h3>
                 <button onclick="toggleLogin()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">✕</button>
             </div>
             <div class="modal-body">
-                <form onsubmit="handleLogin(event)">
+                <form onsubmit="handleLogin(event)" id="loginForm">
                     <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="email" id="email" required>
+                        <label for="email">📧 Email</label>
+                        <input type="email" id="email" required placeholder="tu@email.com">
                     </div>
                     <div class="form-group">
-                        <label for="password">Contraseña</label>
-                        <input type="password" id="password" required>
+                        <label for="password">🔒 Contraseña</label>
+                        <input type="password" id="password" required placeholder="••••••••">
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width: 100%;">Iniciar Sesión</button>
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" id="rememberMe">
+                            <span>Recordarme</span>
+                        </label>
+                        <a href="#" onclick="showForgotPassword()" class="forgot-password">¿Olvidaste tu contraseña?</a>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        🚀 Iniciar Sesión
+                    </button>
                 </form>
-                <p class="register-link">¿No tienes cuenta? <a href="#" onclick="alert('Función de registro próximamente')">Regístrate aquí</a></p>
+                <div class="modal-divider">
+                    <span>o</span>
+                </div>
+                <div class="social-login">
+                    <button class="btn-social google" onclick="loginWithGoogle()">
+                        <span>🔍</span> Continuar con Google
+                    </button>
+                    <button class="btn-social facebook" onclick="loginWithFacebook()">
+                        <span>📘</span> Continuar con Facebook
+                    </button>
+                </div>
+                <p class="register-link">
+                    ¿No tienes cuenta? 
+                    <a href="#" onclick="showRegister()">Regístrate aquí</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Registro -->
+    <div class="modal" id="registerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📝 Crear Cuenta</h3>
+                <button onclick="toggleRegister()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">✕</button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="handleRegister(event)" id="registerForm">
+                    <div class="form-group">
+                        <label for="regName">👤 Nombre Completo</label>
+                        <input type="text" id="regName" required placeholder="Tu nombre completo">
+                    </div>
+                    <div class="form-group">
+                        <label for="regEmail">📧 Email</label>
+                        <input type="email" id="regEmail" required placeholder="tu@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="regPassword">🔒 Contraseña</label>
+                        <input type="password" id="regPassword" required placeholder="••••••••">
+                    </div>
+                    <div class="form-group">
+                        <label for="regConfirmPassword">🔒 Confirmar Contraseña</label>
+                        <input type="password" id="regConfirmPassword" required placeholder="••••••••">
+                    </div>
+                    <div class="form-group">
+                        <label for="regPhone">📱 Teléfono</label>
+                        <input type="tel" id="regPhone" placeholder="+57 300 123 4567">
+                    </div>
+                    <div class="form-options">
+                        <label class="terms-checkbox">
+                            <input type="checkbox" id="acceptTerms" required>
+                            <span>Acepto los <a href="#" onclick="showTerms()">términos y condiciones</a></span>
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        🎉 Crear Cuenta
+                    </button>
+                </form>
+                <p class="login-link">
+                    ¿Ya tienes cuenta? 
+                    <a href="#" onclick="showLogin()">Inicia sesión aquí</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Recuperación de Contraseña -->
+    <div class="modal" id="forgotPasswordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>🔑 Recuperar Contraseña</h3>
+                <button onclick="toggleForgotPassword()" style="background: none; border: none; font-size: 1.5rem; cursor: pointer;">✕</button>
+            </div>
+            <div class="modal-body">
+                <p class="forgot-description">
+                    Ingresa tu email y te enviaremos un enlace para restablecer tu contraseña.
+                </p>
+                <form onsubmit="handleForgotPassword(event)" id="forgotPasswordForm">
+                    <div class="form-group">
+                        <label for="forgotEmail">📧 Email</label>
+                        <input type="email" id="forgotEmail" required placeholder="tu@email.com">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        📧 Enviar Enlace
+                    </button>
+                </form>
+                <p class="login-link">
+                    ¿Recordaste tu contraseña? 
+                    <a href="#" onclick="showLogin()">Inicia sesión aquí</a>
+                </p>
             </div>
         </div>
     </div>
@@ -1220,13 +1499,20 @@
     </footer>
 
     <script>
+        // Configuración de moneda
+        const CURRENCY_CONFIG = {
+            USD_TO_COP: 4200, // Valor aproximado del dólar a peso colombiano
+            SYMBOL: 'COP',
+            LOCALE: 'es-CO'
+        };
+
         const products = [
-            {id: 1, name: "Goku Super Saiyan", description: "Figura de acción articulada de Goku en forma Super Saiyan", price: 899.99, image: "Dragon Ball.jpg", category: "figuras"},
-            {id: 2, name: "Vegeta Prince", description: "Figura premium de Vegeta con detalles únicos", price: 1299.99, image: "Dragon Ball.png", category: "estatuas"},
-            {id: 3, name: "Esfera del Dragón", description: "Esfera del dragón de 7 estrellas coleccionable", price: 299.99, image: "esfera-dragon.png", category: "accesorios"},
-            {id: 4, name: "Cápsula Hoi-Poi", description: "Cápsula Hoi-Poi funcional con luz LED", price: 199.99, image: "capsula.jpg", category: "accesorios"},
-            {id: 5, name: "Piccolo Namekiano", description: "Figura articulada de Piccolo con capa", price: 799.99, image: "Dragon Ball.jpg", category: "figuras"},
-            {id: 6, name: "Freezer Final Form", description: "Estatua premium de Freezer en su forma final", price: 1599.99, image: "Dragon Ball.png", category: "estatuas"}
+            {id: 1, name: "Goku Super Saiyan", description: "Figura de acción articulada de Goku en forma Super Saiyan", price: 89.99, image: "Dragon Ball.jpg", category: "figuras"},
+            {id: 2, name: "Vegeta Prince", description: "Figura premium de Vegeta con detalles únicos", price: 129.99, image: "Dragon Ball.png", category: "estatuas"},
+            {id: 3, name: "Esfera del Dragón", description: "Esfera del dragón de 7 estrellas coleccionable", price: 29.99, image: "esfera-dragon.png", category: "accesorios"},
+            {id: 4, name: "Cápsula Hoi-Poi", description: "Cápsula Hoi-Poi funcional con luz LED", price: 19.99, image: "capsula.jpg", category: "accesorios"},
+            {id: 5, name: "Piccolo Namekiano", description: "Figura articulada de Piccolo con capa", price: 79.99, image: "Dragon Ball.jpg", category: "figuras"},
+            {id: 6, name: "Freezer Final Form", description: "Estatua premium de Freezer en su forma final", price: 159.99, image: "Dragon Ball.png", category: "estatuas"}
         ];
         let cart = [];
         let currentFilter = 'all';
@@ -1244,6 +1530,31 @@
             searchInput: null,
             filterBtns: null
         };
+
+        // Funciones de conversión de moneda
+        function convertToCOP(usdPrice) {
+            return usdPrice * CURRENCY_CONFIG.USD_TO_COP;
+        }
+
+        function formatPrice(usdPrice) {
+            const copPrice = convertToCOP(usdPrice);
+            return new Intl.NumberFormat(CURRENCY_CONFIG.LOCALE, {
+                style: 'currency',
+                currency: CURRENCY_CONFIG.SYMBOL,
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(copPrice);
+        }
+
+        function formatPriceWithDecimals(usdPrice) {
+            const copPrice = convertToCOP(usdPrice);
+            return new Intl.NumberFormat(CURRENCY_CONFIG.LOCALE, {
+                style: 'currency',
+                currency: CURRENCY_CONFIG.SYMBOL,
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(copPrice);
+        }
         
         document.addEventListener('DOMContentLoaded', function() { 
             // Inicializar cache de elementos DOM
@@ -1257,7 +1568,7 @@
             
             // Forzar reset del total al cargar la página
             if (domCache.cartTotal) {
-                domCache.cartTotal.textContent = 'Total: $0.00';
+                domCache.cartTotal.textContent = 'Total: COP $0';
             }
             
             updateCartDisplay(); // Inicializar el carrito correctamente
@@ -1376,7 +1687,7 @@
             filteredProducts.forEach(product => {
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
-                productCard.innerHTML = `<img src="${product.image}" alt="${product.name}" class="product-image"><div class="product-info"><h3 class="product-title">${product.name}</h3><p class="product-description">${product.description}</p><div class="product-price">$${product.price.toFixed(2)}</div><button class="add-to-cart" onclick="addToCart(${product.id})"><img src="capsula.jpg" alt="Cápsula" style="width: 16px; height: 16px; margin-right: 0.5rem; border-radius: 50%; vertical-align: middle;">Agregar al Carrito</button></div></div>`;
+                productCard.innerHTML = `<img src="${product.image}" alt="${product.name}" class="product-image"><div class="product-info"><h3 class="product-title">${product.name}</h3><p class="product-description">${product.description}</p><div class="product-price">${formatPrice(product.price)}</div><button class="add-to-cart" onclick="addToCart(${product.id})"><img src="capsula.jpg" alt="Cápsula" style="width: 16px; height: 16px; margin-right: 0.5rem; border-radius: 50%; vertical-align: middle;">Agregar al Carrito</button></div></div>`;
                 productsGrid.appendChild(productCard);
             });
         }
@@ -1484,7 +1795,7 @@
                     domCache.cartItems.appendChild(emptyDiv);
                 }
                 domCache.cartFooter.style.display = 'none';
-                domCache.cartTotal.textContent = 'Total: $0.00';
+                domCache.cartTotal.textContent = 'Total: COP $0';
                 console.log('Carrito vacío - Total reseteado a $0.00');
             } else {
                 domCache.cartFooter.style.display = 'block';
@@ -1500,7 +1811,7 @@
                             <img src="${item.image}" alt="${item.name}" class="cart-item-image">
                             <div class="cart-item-info">
                                 <div class="cart-item-name">${item.name}</div>
-                                <div class="cart-item-price">$${item.price.toFixed(2)}</div>
+                                <div class="cart-item-price">${formatPrice(item.price)}</div>
                             </div>
                         </div>
                         <div class="cart-item-controls">
@@ -1513,7 +1824,7 @@
                     domCache.cartItems.appendChild(cartItem);
                 });
                 
-                domCache.cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+                domCache.cartTotal.textContent = `Total: ${formatPrice(total)}`;
                 console.log('Carrito con productos - Total:', total);
             }
         }
@@ -1527,7 +1838,7 @@
             
             // Verificar si el carrito está vacío después de la actualización
             if (cart.length === 0 && domCache.cartTotal) {
-                domCache.cartTotal.textContent = 'Total: $0.00';
+                domCache.cartTotal.textContent = 'Total: COP $0';
             }
             
             updateCartDisplay();
@@ -1537,7 +1848,7 @@
             
             // Verificar si el carrito está vacío después de eliminar
             if (cart.length === 0 && domCache.cartTotal) {
-                domCache.cartTotal.textContent = 'Total: $0.00';
+                domCache.cartTotal.textContent = 'Total: COP $0';
             }
             
             updateCartDisplay(); 
@@ -1548,7 +1859,7 @@
                 cart = [];
                 // Forzar reset del total usando cache
                 if (domCache.cartTotal) {
-                    domCache.cartTotal.textContent = 'Total: $0.00';
+                    domCache.cartTotal.textContent = 'Total: COP $0';
                 }
                 updateCartDisplay();
             }
@@ -1564,7 +1875,7 @@
                 if (cart.length === 0) {
                     cart = [];
                     if (domCache.cartTotal) {
-                        domCache.cartTotal.textContent = 'Total: $0.00';
+                        domCache.cartTotal.textContent = 'Total: COP $0';
                     }
                 }
                 updateCartDisplay();
@@ -1578,7 +1889,7 @@
             }
             
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            alert(`¡Gracias por tu compra!\n\nTotal: $${total.toFixed(2)}\n\n¡Disfruta tus figuras Dragon Ball!`);
+            alert(`¡Gracias por tu compra!\n\nTotal: ${formatPrice(total)}\n\n¡Disfruta tus figuras Dragon Ball!`);
             
             cart = [];
             updateCartDisplay();
@@ -1633,11 +1944,129 @@
             const section = document.getElementById(sectionId);
             if (section) { section.scrollIntoView({ behavior: 'smooth' }); }
         }
+        // Funciones de login mejoradas
         function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            if (email && password) { alert('¡Inicio de sesión exitoso!'); toggleLogin(); document.querySelector('form').reset(); } else { alert('Por favor completa todos los campos'); }
+            const rememberMe = document.getElementById('rememberMe').checked;
+            
+            if (email && password) {
+                // Simular validación
+                if (email.includes('@') && password.length >= 6) {
+                    alert('¡Inicio de sesión exitoso! 🎉');
+                    toggleLogin();
+                    document.getElementById('loginForm').reset();
+                    
+                    // Guardar en localStorage si "Recordarme" está marcado
+                    if (rememberMe) {
+                        localStorage.setItem('userEmail', email);
+                        localStorage.setItem('rememberMe', 'true');
+                    }
+                } else {
+                    alert('❌ Email inválido o contraseña muy corta (mínimo 6 caracteres)');
+                }
+            } else {
+                alert('❌ Por favor completa todos los campos');
+            }
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value;
+            const phone = document.getElementById('regPhone').value;
+            const acceptTerms = document.getElementById('acceptTerms').checked;
+            
+            // Validaciones
+            if (!name || !email || !password || !confirmPassword) {
+                alert('❌ Por favor completa todos los campos obligatorios');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('❌ Las contraseñas no coinciden');
+                return;
+            }
+            
+            if (password.length < 6) {
+                alert('❌ La contraseña debe tener al menos 6 caracteres');
+                return;
+            }
+            
+            if (!acceptTerms) {
+                alert('❌ Debes aceptar los términos y condiciones');
+                return;
+            }
+            
+            if (!email.includes('@')) {
+                alert('❌ Email inválido');
+                return;
+            }
+            
+            // Simular registro exitoso
+            alert(`¡Registro exitoso! 🎉\n\nBienvenido ${name}!\n\nTu cuenta ha sido creada correctamente.`);
+            toggleRegister();
+            document.getElementById('registerForm').reset();
+        }
+
+        function handleForgotPassword(e) {
+            e.preventDefault();
+            const email = document.getElementById('forgotEmail').value;
+            
+            if (email && email.includes('@')) {
+                alert(`📧 Se ha enviado un enlace de recuperación a ${email}\n\nRevisa tu bandeja de entrada.`);
+                toggleForgotPassword();
+                document.getElementById('forgotPasswordForm').reset();
+            } else {
+                alert('❌ Por favor ingresa un email válido');
+            }
+        }
+
+        // Funciones de navegación entre modales
+        function showRegister() {
+            toggleLogin();
+            setTimeout(() => {
+                document.getElementById('registerModal').classList.add('active');
+            }, 300);
+        }
+
+        function showLogin() {
+            toggleRegister();
+            toggleForgotPassword();
+            setTimeout(() => {
+                document.getElementById('loginModal').classList.add('active');
+            }, 300);
+        }
+
+        function showForgotPassword() {
+            toggleLogin();
+            setTimeout(() => {
+                document.getElementById('forgotPasswordModal').classList.add('active');
+            }, 300);
+        }
+
+        function toggleRegister() {
+            document.getElementById('registerModal').classList.toggle('active');
+        }
+
+        function toggleForgotPassword() {
+            document.getElementById('forgotPasswordModal').classList.toggle('active');
+        }
+
+        // Funciones de login social (simuladas)
+        function loginWithGoogle() {
+            alert('🔍 Iniciando sesión con Google...\n\n(Función simulada - En producción se integraría con Google OAuth)');
+        }
+
+        function loginWithFacebook() {
+            alert('📘 Iniciando sesión con Facebook...\n\n(Función simulada - En producción se integraría con Facebook SDK)');
+        }
+
+        function showTerms() {
+            alert('📋 Términos y Condiciones\n\nAquí irían los términos y condiciones de la tienda.\n\n(Función simulada)');
         }
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
