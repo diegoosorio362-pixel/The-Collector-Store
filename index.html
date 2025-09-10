@@ -7,11 +7,12 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: #333;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
         }
         
         img {
@@ -47,8 +48,47 @@
             background-size: 150px 150px, 120px 120px, 100px 100px, 180px 180px, 80px 80px, 20px 20px, 15px 15px, 100% 100%;
             background-attachment: fixed;
             min-height: 100vh;
+            position: relative;
         }
-        .header { background: transparent; color: white; padding: 1rem 0; position: fixed; top: 0; width: 100%; z-index: 1000; }
+
+        /* Efectos de partículas animadas */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(2px 2px at 20px 30px, rgba(255, 215, 0, 0.3), transparent),
+                radial-gradient(2px 2px at 40px 70px, rgba(255, 107, 53, 0.3), transparent),
+                radial-gradient(1px 1px at 90px 40px, rgba(255, 215, 0, 0.4), transparent),
+                radial-gradient(1px 1px at 130px 80px, rgba(255, 107, 53, 0.3), transparent),
+                radial-gradient(2px 2px at 160px 30px, rgba(255, 215, 0, 0.2), transparent);
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: particleFloat 20s linear infinite;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes particleFloat {
+            0% { transform: translateY(0px) rotate(0deg); }
+            100% { transform: translateY(-200px) rotate(360deg); }
+        }
+        .header { 
+            background: rgba(0, 0, 0, 0.1); 
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            color: white; 
+            padding: 1rem 0; 
+            position: fixed; 
+            top: 0; 
+            width: 100%; 
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
         .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
         .logo { 
             font-size: 1.8rem; 
@@ -118,7 +158,142 @@
         @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes fadeInOut { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } 80% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); } }
+        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-100px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
+        @keyframes bounceIn { 0% { opacity: 0; transform: scale(0.3); } 50% { opacity: 1; transform: scale(1.05); } 70% { transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes shimmer { 0% { background-position: -200px 0; } 100% { background-position: calc(200px + 100%) 0; } }
         .section { padding: 5rem 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px); }
+        
+        /* Slider de productos destacados */
+        .hero-slider {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, #ff6b35, #f7931e, #ffd700);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-slider::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="stars" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.3)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.3)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.4)"/></pattern></defs><rect width="100" height="100" fill="url(%23stars)"/></svg>');
+            opacity: 0.5;
+        }
+        .slider-container {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+            z-index: 2;
+        }
+        .slider-track {
+            display: flex;
+            transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide {
+            min-width: 100%;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+        }
+        .slide-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 3rem;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .slide-image {
+            text-align: center;
+        }
+        .slide-img {
+            max-width: 100%;
+            height: 300px;
+            object-fit: contain;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+            animation: pulse 2s ease-in-out infinite;
+        }
+        .slide-info h3 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #333;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .slide-info p {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        .slide-price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ff6b35;
+            margin-bottom: 2rem;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .slider-controls {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+        }
+        .slider-btn {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            pointer-events: all;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            color: #ff6b35;
+        }
+        .slider-btn:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: scale(1.1);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.2);
+        }
+        .slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        .dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .dot.active {
+            background: white;
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
         .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
         .section-title { font-size: 2.5rem; text-align: center; margin-bottom: 3rem; color: #333; position: relative; }
         .section-title::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 80px; height: 4px; background: linear-gradient(90deg, #ff6b35, #f7931e); border-radius: 2px; }
@@ -129,8 +304,37 @@
         .search-input { padding: 0.8rem 1.5rem; border: 2px solid #e0e0e0; border-radius: 25px; width: 300px; font-size: 1rem; outline: none; transition: all 0.3s; }
         .search-input:focus { border-color: #ff6b35; box-shadow: 0 0 10px rgba(255, 107, 53, 0.2); }
         .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem; }
-        .product-card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.4s ease; position: relative; }
-        .product-card:hover { transform: translateY(-15px) scale(1.02); box-shadow: 0 15px 35px rgba(0,0,0,0.2); }
+        .product-card { 
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 20px; 
+            overflow: hidden; 
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1); 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .product-card:hover { 
+            transform: translateY(-20px) scale(1.03) rotateX(5deg); 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            background: rgba(255, 255, 255, 1);
+        }
+        .product-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.1), rgba(255, 107, 53, 0.1));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+        }
+        .product-card:hover::before {
+            opacity: 1;
+        }
         .product-image { 
             width: 100%; 
             height: 250px; 
@@ -144,7 +348,10 @@
             -webkit-transform: translateZ(0);
             transform: translateZ(0);
         }
-        .product-card:hover .product-image { transform: scale(1.3); }
+        .product-card:hover .product-image { 
+            transform: scale(1.2) rotateY(5deg); 
+            filter: brightness(1.1) contrast(1.1);
+        }
         .product-info { padding: 1.5rem; position: relative; }
         .product-badge { position: absolute; top: 10px; right: 10px; background: #ff6b35; color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; font-weight: 600; }
         .product-badge.new { background: #4CAF50; }
@@ -152,8 +359,41 @@
         .product-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; color: #333; }
         .product-description { color: #666; margin-bottom: 1rem; font-size: 0.9rem; }
         .product-price { font-size: 1.5rem; font-weight: 700; color: #ff6b35; margin-bottom: 1rem; }
-        .add-to-cart { width: 100%; background: #ff6b35; color: white; border: none; padding: 0.8rem; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
-        .add-to-cart:hover { background: #f7931e; transform: translateY(-2px); }
+        .add-to-cart { 
+            width: 100%; 
+            background: linear-gradient(135deg, #ff6b35, #f7931e); 
+            color: white; 
+            border: none; 
+            padding: 1rem; 
+            border-radius: 12px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+        .add-to-cart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+        .add-to-cart:hover { 
+            background: linear-gradient(135deg, #f7931e, #ffd700); 
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+        .add-to-cart:hover::before {
+            left: 100%;
+        }
+        .add-to-cart:active {
+            transform: translateY(-1px) scale(0.98);
+        }
         .categories-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 2rem; }
         .category-card { background: white; padding: 2rem; border-radius: 15px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: all 0.3s; cursor: pointer; border: 2px solid transparent; }
         .category-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); border-color: #ff6b35; }
@@ -513,7 +753,99 @@
         .form-group input:focus { outline: none; border-color: #ff6b35; }
         .register-link { text-align: center; margin-top: 1rem; color: #666; }
         .register-link a { color: #ff6b35; text-decoration: none; }
-        @media (max-width: 768px) { .hero-content { grid-template-columns: 1fr; text-align: center; } .hero-title { font-size: 2rem; } .nav-menu { display: none; } .cart-sidebar { width: 100%; right: -100%; } }
+        @media (max-width: 768px) { 
+            .hero-content { grid-template-columns: 1fr; text-align: center; } 
+            .hero-title { font-size: 2rem; } 
+            .nav-menu { display: none; } 
+            .cart-sidebar { width: 100%; right: -100%; }
+            
+            /* Slider responsive */
+            .slide-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 2rem;
+            }
+            .slide-info h3 {
+                font-size: 2rem;
+            }
+            .slide-img {
+                height: 200px;
+            }
+            .slider-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            /* Productos responsive */
+            .products-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 1.5rem;
+            }
+            .product-card {
+                border-radius: 15px;
+            }
+            .add-to-cart {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            /* Header responsive */
+            .header {
+                padding: 0.5rem 0;
+            }
+            .nav-container {
+                padding: 0 15px;
+            }
+            .logo {
+                font-size: 1.5rem;
+            }
+            .nav-actions .btn {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            
+            /* Filtros responsive */
+            .filters-container {
+                gap: 0.5rem;
+            }
+            .filter-btn {
+                padding: 0.4rem 1rem;
+                font-size: 0.9rem;
+            }
+            .search-input {
+                width: 250px;
+                padding: 0.6rem 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-title { font-size: 1.8rem; }
+            .section-title { font-size: 2rem; }
+            .slide-content {
+                padding: 1.5rem;
+            }
+            .slide-info h3 {
+                font-size: 1.8rem;
+            }
+            .slide-price {
+                font-size: 1.5rem;
+            }
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+            .filters-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .search-input {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -554,9 +886,68 @@
         </div>
     </section>
 
+    <!-- Slider de productos destacados -->
+    <section class="hero-slider">
+        <div class="container">
+            <h2 class="section-title" style="color: white; margin-bottom: 3rem;">🌟 Productos Destacados</h2>
+            <div class="slider-container">
+                <div class="slider-track" id="sliderTrack">
+                    <div class="slide active">
+                        <div class="slide-content">
+                            <div class="slide-image">
+                                <img src="Dragon Ball.png" alt="Goku Super Saiyan" class="slide-img">
+                            </div>
+                            <div class="slide-info">
+                                <h3>Goku Super Saiyan</h3>
+                                <p>La figura más poderosa de la colección</p>
+                                <div class="slide-price">$89.99</div>
+                                <button class="btn btn-primary" onclick="addToCart(1)">🛒 Agregar al Carrito</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <div class="slide-content">
+                            <div class="slide-image">
+                                <img src="esfera-dragon.png" alt="Esfera del Dragón" class="slide-img">
+                            </div>
+                            <div class="slide-info">
+                                <h3>Esfera del Dragón</h3>
+                                <p>Replica auténtica de 4 estrellas</p>
+                                <div class="slide-price">$45.99</div>
+                                <button class="btn btn-primary" onclick="addToCart(2)">🛒 Agregar al Carrito</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slide">
+                        <div class="slide-content">
+                            <div class="slide-image">
+                                <img src="capsula.jpg" alt="Vegeta" class="slide-img">
+                            </div>
+                            <div class="slide-info">
+                                <h3>Vegeta Prince</h3>
+                                <p>El Príncipe de los Saiyajin</p>
+                                <div class="slide-price">$79.99</div>
+                                <button class="btn btn-primary" onclick="addToCart(3)">🛒 Agregar al Carrito</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slider-controls">
+                    <button class="slider-btn prev" onclick="changeSlide(-1)">❮</button>
+                    <button class="slider-btn next" onclick="changeSlide(1)">❯</button>
+                </div>
+                <div class="slider-dots">
+                    <span class="dot active" onclick="currentSlide(1)"></span>
+                    <span class="dot" onclick="currentSlide(2)"></span>
+                    <span class="dot" onclick="currentSlide(3)"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section class="section" id="productos">
         <div class="container">
-            <h2 class="section-title">Productos Destacados</h2>
+            <h2 class="section-title">Todos los Productos</h2>
             
             <!-- Filtros por personaje -->
             <div class="filters-container">
@@ -762,9 +1153,14 @@
         ];
         let cart = [];
         let currentFilter = 'all';
+        let currentSlideIndex = 0;
+        let slideInterval;
+        
         document.addEventListener('DOMContentLoaded', function() { 
             loadProducts(); 
             initFilters();
+            initSlider();
+            initScrollAnimations();
             
             // Forzar reset del total al cargar la página
             const cartTotal = document.getElementById('cartTotal');
@@ -774,6 +1170,76 @@
             
             updateCartDisplay(); // Inicializar el carrito correctamente
         });
+        
+        // Funciones del slider
+        function initSlider() {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            
+            // Auto-slide cada 5 segundos
+            slideInterval = setInterval(() => {
+                changeSlide(1);
+            }, 5000);
+            
+            // Pausar auto-slide al hacer hover
+            const sliderContainer = document.querySelector('.slider-container');
+            sliderContainer.addEventListener('mouseenter', () => clearInterval(slideInterval));
+            sliderContainer.addEventListener('mouseleave', () => {
+                slideInterval = setInterval(() => changeSlide(1), 5000);
+            });
+        }
+        
+        function changeSlide(direction) {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            
+            slides[currentSlideIndex].classList.remove('active');
+            dots[currentSlideIndex].classList.remove('active');
+            
+            currentSlideIndex += direction;
+            
+            if (currentSlideIndex >= slides.length) currentSlideIndex = 0;
+            if (currentSlideIndex < 0) currentSlideIndex = slides.length - 1;
+            
+            slides[currentSlideIndex].classList.add('active');
+            dots[currentSlideIndex].classList.add('active');
+        }
+        
+        function currentSlide(slideNumber) {
+            const slides = document.querySelectorAll('.slide');
+            const dots = document.querySelectorAll('.dot');
+            
+            slides[currentSlideIndex].classList.remove('active');
+            dots[currentSlideIndex].classList.remove('active');
+            
+            currentSlideIndex = slideNumber - 1;
+            
+            slides[currentSlideIndex].classList.add('active');
+            dots[currentSlideIndex].classList.add('active');
+        }
+        
+        // Animaciones de scroll
+        function initScrollAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.animation = 'fadeIn 0.8s ease forwards';
+                    }
+                });
+            }, observerOptions);
+            
+            // Observar elementos para animar
+            document.querySelectorAll('.product-card, .category-card, .section-title').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                observer.observe(el);
+            });
+        }
         function loadProducts() {
             const productsGrid = document.getElementById('productsGrid');
             productsGrid.innerHTML = '';
