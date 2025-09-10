@@ -89,6 +89,13 @@
             box-shadow: none;
         }
         
+        .header.scrolled .nav-menu {
+            opacity: 0;
+            transform: translateY(-20px);
+            pointer-events: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
         .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
         .logo { 
             font-size: 1.8rem; 
@@ -880,7 +887,7 @@
     <header class="header">
         <div class="nav-container">
             <a href="#inicio" class="logo">
-                <img src="Logo.png" alt="The Collector Store">
+                <img src="capsula.jpg" alt="The Collector Store">
                 <span class="logo-text">The Collector Store</span>
             </a>
             <ul class="nav-menu">
@@ -1189,6 +1196,7 @@
             initFilters();
             initSlider();
             initScrollAnimations();
+            initHeaderScroll();
             
             // Forzar reset del total al cargar la página
             const cartTotal = document.getElementById('cartTotal');
@@ -1198,6 +1206,21 @@
             
             updateCartDisplay(); // Inicializar el carrito correctamente
         });
+        
+        // Función para manejar el scroll del header
+        function initHeaderScroll() {
+            const header = document.querySelector('.header');
+            
+            window.addEventListener('scroll', () => {
+                const currentScrollY = window.scrollY;
+                
+                if (currentScrollY > 100) {
+                    header.classList.add('scrolled');
+                } else {
+                    header.classList.remove('scrolled');
+                }
+            });
+        }
         
         // Funciones del slider
         function initSlider() {
