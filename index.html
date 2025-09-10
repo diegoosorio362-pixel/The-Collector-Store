@@ -77,7 +77,7 @@
             100% { transform: translateY(-200px) rotate(360deg); }
         }
         .header { 
-            background: transparent; 
+            background: transparent !important; 
             color: white; 
             padding: 1rem 0; 
             position: fixed; 
@@ -85,6 +85,8 @@
             width: 100%; 
             z-index: 1000;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: none;
+            box-shadow: none;
         }
         
         .header.scrolled {
@@ -294,7 +296,8 @@
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            width: 100%;
+            width: calc(100% + 4rem);
+            left: -2rem;
             display: flex;
             justify-content: space-between;
             pointer-events: none;
