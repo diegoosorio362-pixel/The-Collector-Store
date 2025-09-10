@@ -23,6 +23,9 @@
             backface-visibility: hidden;
             -webkit-transform: translateZ(0);
             transform: translateZ(0);
+            /* Optimización de carga */
+            loading: lazy;
+            will-change: transform;
         }
         
         body {
@@ -51,7 +54,7 @@
             position: relative;
         }
 
-        /* Efectos de partículas animadas */
+        /* Efectos de partículas optimizados */
         body::before {
             content: '';
             position: fixed;
@@ -60,21 +63,19 @@
             width: 100%;
             height: 100%;
             background: 
-                radial-gradient(2px 2px at 20px 30px, rgba(255, 215, 0, 0.3), transparent),
-                radial-gradient(2px 2px at 40px 70px, rgba(255, 107, 53, 0.3), transparent),
-                radial-gradient(1px 1px at 90px 40px, rgba(255, 215, 0, 0.4), transparent),
-                radial-gradient(1px 1px at 130px 80px, rgba(255, 107, 53, 0.3), transparent),
-                radial-gradient(2px 2px at 160px 30px, rgba(255, 215, 0, 0.2), transparent);
+                radial-gradient(1px 1px at 20px 30px, rgba(255, 215, 0, 0.2), transparent),
+                radial-gradient(1px 1px at 40px 70px, rgba(255, 107, 53, 0.2), transparent);
             background-repeat: repeat;
-            background-size: 200px 200px;
-            animation: particleFloat 20s linear infinite;
+            background-size: 300px 300px;
+            animation: particleFloat 30s linear infinite;
             pointer-events: none;
             z-index: 1;
+            will-change: transform;
         }
 
         @keyframes particleFloat {
-            0% { transform: translateY(0px) rotate(0deg); }
-            100% { transform: translateY(-200px) rotate(360deg); }
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-100px); }
         }
         .header { 
             background: transparent !important; 
@@ -175,14 +176,46 @@
         .btn-secondary { background: transparent; color: white; border: 2px solid white; padding: 1rem 2rem; font-size: 1rem; }
         .btn-secondary:hover { background: white; color: #ff6b35; }
         .hero-image { text-align: center; }
-        .hero-img { max-width: 100%; height: auto; filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3)); animation: float 3s ease-in-out infinite; }
-        @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-20px); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes fadeInOut { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); } 20% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); } 80% { opacity: 1; transform: translate(-50%, -50%) scale(1); } 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); } }
-        @keyframes slideInLeft { from { opacity: 0; transform: translateX(-100px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes slideInRight { from { opacity: 0; transform: translateX(100px); } to { opacity: 1; transform: translateX(0); } }
-        @keyframes bounceIn { 0% { opacity: 0; transform: scale(0.3); } 50% { opacity: 1; transform: scale(1.05); } 70% { transform: scale(0.9); } 100% { opacity: 1; transform: scale(1); } }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        .hero-img { 
+            max-width: 100%; 
+            height: auto; 
+            filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3)); 
+            animation: float 3s ease-in-out infinite;
+            will-change: transform;
+        }
+        @keyframes float { 
+            0%, 100% { transform: translate3d(0, 0, 0); } 
+            50% { transform: translate3d(0, -20px, 0); } 
+        }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translate3d(0, 20px, 0); } 
+            to { opacity: 1; transform: translate3d(0, 0, 0); } 
+        }
+        @keyframes fadeInOut { 
+            0% { opacity: 0; transform: translate3d(-50%, -50%, 0) scale(0.8); } 
+            20% { opacity: 1; transform: translate3d(-50%, -50%, 0) scale(1.1); } 
+            80% { opacity: 1; transform: translate3d(-50%, -50%, 0) scale(1); } 
+            100% { opacity: 0; transform: translate3d(-50%, -50%, 0) scale(0.8); } 
+        }
+        @keyframes slideInLeft { 
+            from { opacity: 0; transform: translate3d(-100px, 0, 0); } 
+            to { opacity: 1; transform: translate3d(0, 0, 0); } 
+        }
+        @keyframes slideInRight { 
+            from { opacity: 0; transform: translate3d(100px, 0, 0); } 
+            to { opacity: 1; transform: translate3d(0, 0, 0); } 
+        }
+        @keyframes bounceIn { 
+            0% { opacity: 0; transform: scale3d(0.3, 0.3, 1); } 
+            50% { opacity: 1; transform: scale3d(1.05, 1.05, 1); } 
+            70% { transform: scale3d(0.9, 0.9, 1); } 
+            100% { opacity: 1; transform: scale3d(1, 1, 1); } 
+        }
+        @keyframes pulse { 
+            0% { transform: scale3d(1, 1, 1); } 
+            50% { transform: scale3d(1.05, 1.05, 1); } 
+            100% { transform: scale3d(1, 1, 1); } 
+        }
         @keyframes shimmer { 0% { background-position: -200px 0; } 100% { background-position: calc(200px + 100%) 0; } }
         .section { padding: 5rem 0; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(5px); }
         
@@ -256,6 +289,7 @@
             object-fit: contain;
             filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
             animation: pulse 2s ease-in-out infinite;
+            will-change: transform;
         }
         .slide-info h3 {
             font-size: 2.5rem;
@@ -339,19 +373,18 @@
         .search-input:focus { border-color: #ff6b35; box-shadow: 0 0 10px rgba(255, 107, 53, 0.2); }
         .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem; }
         .product-card { 
-            background: rgba(255, 255, 255, 0.95); 
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.98); 
             border-radius: 20px; 
             overflow: hidden; 
             box-shadow: 0 8px 32px rgba(0,0,0,0.1); 
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
+            transition: transform 0.3s ease, box-shadow 0.3s ease; 
             position: relative;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            will-change: transform;
         }
         .product-card:hover { 
-            transform: translateY(-20px) scale(1.03) rotateX(5deg); 
-            box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+            transform: translateY(-10px) scale(1.02); 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
             background: rgba(255, 255, 255, 1);
         }
         .product-card::before {
@@ -383,8 +416,8 @@
             transform: translateZ(0);
         }
         .product-card:hover .product-image { 
-            transform: scale(1.2) rotateY(5deg); 
-            filter: brightness(1.1) contrast(1.1);
+            transform: scale(1.1); 
+            filter: brightness(1.05);
         }
         .product-info { padding: 1.5rem; position: relative; }
         .product-badge { position: absolute; top: 10px; right: 10px; background: #ff6b35; color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; font-weight: 600; }
@@ -887,7 +920,7 @@
     <header class="header">
         <div class="nav-container">
             <a href="#inicio" class="logo">
-                <img src="Logo.png" alt="The Collector Store">
+                <img src="Logo.png" alt="The Collector Store" loading="lazy">
                 <span class="logo-text">The Collector Store</span>
             </a>
             <ul class="nav-menu">
@@ -916,7 +949,7 @@
                 </div>
             </div>
             <div class="hero-image">
-                <img src="Dragon Ball.png" alt="Dragon Ball Collection" class="hero-img">
+                <img src="Dragon Ball.png" alt="Dragon Ball Collection" class="hero-img" loading="eager">
             </div>
         </div>
     </section>
@@ -1200,7 +1233,22 @@
         let currentSlideIndex = 0;
         let slideInterval;
         
+        // Cache de elementos DOM para mejor rendimiento
+        const domCache = {
+            cartButton: null,
+            cartItems: null,
+            cartTotal: null,
+            cartFooter: null,
+            cartEmpty: null,
+            productsGrid: null,
+            searchInput: null,
+            filterBtns: null
+        };
+        
         document.addEventListener('DOMContentLoaded', function() { 
+            // Inicializar cache de elementos DOM
+            initDOMCache();
+            
             loadProducts(); 
             initFilters();
             initSlider();
@@ -1208,13 +1256,24 @@
             initHeaderScroll();
             
             // Forzar reset del total al cargar la página
-            const cartTotal = document.getElementById('cartTotal');
-            if (cartTotal) {
-                cartTotal.textContent = 'Total: $0.00';
+            if (domCache.cartTotal) {
+                domCache.cartTotal.textContent = 'Total: $0.00';
             }
             
             updateCartDisplay(); // Inicializar el carrito correctamente
         });
+        
+        // Función para inicializar el cache de elementos DOM
+        function initDOMCache() {
+            domCache.cartButton = document.querySelector('.nav-actions .btn');
+            domCache.cartItems = document.getElementById('cartItems');
+            domCache.cartTotal = document.getElementById('cartTotal');
+            domCache.cartFooter = document.getElementById('cartFooter');
+            domCache.cartEmpty = document.getElementById('cartEmpty');
+            domCache.productsGrid = document.getElementById('productsGrid');
+            domCache.searchInput = document.getElementById('searchInput');
+            domCache.filterBtns = document.querySelectorAll('.filter-btn');
+        }
         
         // Función para manejar el scroll del header
         function initHeaderScroll() {
@@ -1394,27 +1453,23 @@
         }
         function updateCartDisplay() {
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const cartButton = document.querySelector('.nav-actions .btn');
-            cartButton.innerHTML = `<img src="capsula.jpg" alt="Carrito" style="width: 20px; height: 20px; margin-right: 0.5rem; border-radius: 50%;">Carrito (${totalItems})`;
+            if (domCache.cartButton) {
+                domCache.cartButton.innerHTML = `<img src="capsula.jpg" alt="Carrito" style="width: 20px; height: 20px; margin-right: 0.5rem; border-radius: 50%;">Carrito (${totalItems})`;
+            }
             
-            const cartItems = document.getElementById('cartItems');
-            const cartTotal = document.getElementById('cartTotal');
-            const cartFooter = document.getElementById('cartFooter');
-            const cartEmpty = document.getElementById('cartEmpty');
-            
-            // Verificar que los elementos existan
-            if (!cartItems || !cartTotal || !cartFooter) {
+            // Verificar que los elementos existan usando cache
+            if (!domCache.cartItems || !domCache.cartTotal || !domCache.cartFooter) {
                 console.error('Elementos del carrito no encontrados');
                 return;
             }
             
             // Limpiar contenido
-            cartItems.innerHTML = '';
+            domCache.cartItems.innerHTML = '';
             
             // Verificar si el carrito está vacío
             if (cart.length === 0 || totalItems === 0) {
-                if (cartEmpty) {
-                    cartItems.appendChild(cartEmpty);
+                if (domCache.cartEmpty) {
+                    domCache.cartItems.appendChild(domCache.cartEmpty);
                 } else {
                     // Crear el elemento cartEmpty si no existe
                     const emptyDiv = document.createElement('div');
@@ -1426,13 +1481,13 @@
                         <p>Tu carrito está vacío</p>
                         <p>¡Agrega algunos productos!</p>
                     `;
-                    cartItems.appendChild(emptyDiv);
+                    domCache.cartItems.appendChild(emptyDiv);
                 }
-                cartFooter.style.display = 'none';
-                cartTotal.textContent = 'Total: $0.00';
+                domCache.cartFooter.style.display = 'none';
+                domCache.cartTotal.textContent = 'Total: $0.00';
                 console.log('Carrito vacío - Total reseteado a $0.00');
             } else {
-                cartFooter.style.display = 'block';
+                domCache.cartFooter.style.display = 'block';
                 
                 let total = 0;
                 cart.forEach(item => {
@@ -1455,10 +1510,10 @@
                             <button class="remove-item" onclick="removeFromCart(${item.id})">🗑️</button>
                         </div>
                     `;
-                    cartItems.appendChild(cartItem);
+                    domCache.cartItems.appendChild(cartItem);
                 });
                 
-                cartTotal.textContent = `Total: $${total.toFixed(2)}`;
+                domCache.cartTotal.textContent = `Total: $${total.toFixed(2)}`;
                 console.log('Carrito con productos - Total:', total);
             }
         }
@@ -1471,11 +1526,8 @@
             }
             
             // Verificar si el carrito está vacío después de la actualización
-            if (cart.length === 0) {
-                const cartTotal = document.getElementById('cartTotal');
-                if (cartTotal) {
-                    cartTotal.textContent = 'Total: $0.00';
-                }
+            if (cart.length === 0 && domCache.cartTotal) {
+                domCache.cartTotal.textContent = 'Total: $0.00';
             }
             
             updateCartDisplay();
@@ -1484,11 +1536,8 @@
             cart = cart.filter(item => item.id !== productId); 
             
             // Verificar si el carrito está vacío después de eliminar
-            if (cart.length === 0) {
-                const cartTotal = document.getElementById('cartTotal');
-                if (cartTotal) {
-                    cartTotal.textContent = 'Total: $0.00';
-                }
+            if (cart.length === 0 && domCache.cartTotal) {
+                domCache.cartTotal.textContent = 'Total: $0.00';
             }
             
             updateCartDisplay(); 
@@ -1497,10 +1546,9 @@
         function clearCart() {
             if (confirm('¿Estás seguro de que quieres vaciar el carrito?')) {
                 cart = [];
-                // Forzar reset del total
-                const cartTotal = document.getElementById('cartTotal');
-                if (cartTotal) {
-                    cartTotal.textContent = 'Total: $0.00';
+                // Forzar reset del total usando cache
+                if (domCache.cartTotal) {
+                    domCache.cartTotal.textContent = 'Total: $0.00';
                 }
                 updateCartDisplay();
             }
@@ -1512,12 +1560,11 @@
             
             // Si se está abriendo el carrito, actualizar la visualización
             if (cartSidebar.classList.contains('active')) {
-                // Limpiar carrito si está vacío
+                // Limpiar carrito si está vacío usando cache
                 if (cart.length === 0) {
                     cart = [];
-                    const cartTotal = document.getElementById('cartTotal');
-                    if (cartTotal) {
-                        cartTotal.textContent = 'Total: $0.00';
+                    if (domCache.cartTotal) {
+                        domCache.cartTotal.textContent = 'Total: $0.00';
                     }
                 }
                 updateCartDisplay();
