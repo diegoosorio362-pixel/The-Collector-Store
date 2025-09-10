@@ -168,7 +168,7 @@
         /* Slider de productos destacados */
         .hero-slider {
             padding: 5rem 0;
-            background: linear-gradient(135deg, #ff6b35, #f7931e, #ffd700);
+            background: linear-gradient(135deg, #1a1a1a, #2d2d2d, #3a3a3a);
             position: relative;
             overflow: hidden;
         }
@@ -179,8 +179,11 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="stars" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.3)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.3)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.4)"/></pattern></defs><rect width="100" height="100" fill="url(%23stars)"/></svg>');
-            opacity: 0.5;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 107, 53, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 60%, rgba(255, 215, 0, 0.05) 0%, transparent 50%);
+            opacity: 0.8;
         }
         .slider-container {
             position: relative;
@@ -207,12 +210,12 @@
             grid-template-columns: 1fr 1fr;
             gap: 3rem;
             align-items: center;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(20px);
             border-radius: 25px;
             padding: 3rem;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 2px solid rgba(255, 255, 255, 0.5);
         }
         .slide-image {
             text-align: center;
