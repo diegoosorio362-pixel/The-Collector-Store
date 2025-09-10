@@ -1149,7 +1149,7 @@
                             <div class="slide-info">
                                 <h3>Goku Super Saiyan</h3>
                                 <p>La figura más poderosa de la colección</p>
-                                <div class="slide-price">${formatPrice(89.99)}</div>
+                                <div class="slide-price" id="slidePrice1">COP $377,916</div>
                                 <button class="btn btn-primary" onclick="addToCart(1)">
                                     <img src="capsula.jpg" alt="Cápsula" style="width: 16px; height: 16px; margin-right: 0.5rem; border-radius: 50%; vertical-align: middle;">
                                     Agregar al Carrito
@@ -1165,7 +1165,7 @@
                             <div class="slide-info">
                                 <h3>Esfera del Dragón</h3>
                                 <p>Replica auténtica de 4 estrellas</p>
-                                <div class="slide-price">${formatPrice(45.99)}</div>
+                                <div class="slide-price" id="slidePrice2">COP $193,158</div>
                                 <button class="btn btn-primary" onclick="addToCart(2)">
                                     <img src="capsula.jpg" alt="Cápsula" style="width: 16px; height: 16px; margin-right: 0.5rem; border-radius: 50%; vertical-align: middle;">
                                     Agregar al Carrito
@@ -1181,7 +1181,7 @@
                             <div class="slide-info">
                                 <h3>Vegeta Prince</h3>
                                 <p>El Príncipe de los Saiyajin</p>
-                                <div class="slide-price">${formatPrice(79.99)}</div>
+                                <div class="slide-price" id="slidePrice3">COP $335,958</div>
                                 <button class="btn btn-primary" onclick="addToCart(3)">
                                     <img src="capsula.jpg" alt="Cápsula" style="width: 16px; height: 16px; margin-right: 0.5rem; border-radius: 50%; vertical-align: middle;">
                                     Agregar al Carrito
@@ -1565,6 +1565,7 @@
             initSlider();
             initScrollAnimations();
             initHeaderScroll();
+            updateSliderPrices(); // Actualizar precios del slider
             
             // Forzar reset del total al cargar la página
             if (domCache.cartTotal) {
@@ -1584,6 +1585,22 @@
             domCache.productsGrid = document.getElementById('productsGrid');
             domCache.searchInput = document.getElementById('searchInput');
             domCache.filterBtns = document.querySelectorAll('.filter-btn');
+        }
+
+        // Función para actualizar precios del slider
+        function updateSliderPrices() {
+            const slidePrices = [
+                { id: 'slidePrice1', price: 89.99 },
+                { id: 'slidePrice2', price: 45.99 },
+                { id: 'slidePrice3', price: 79.99 }
+            ];
+
+            slidePrices.forEach(slide => {
+                const element = document.getElementById(slide.id);
+                if (element) {
+                    element.textContent = formatPrice(slide.price);
+                }
+            });
         }
         
         // Función para manejar el scroll del header
