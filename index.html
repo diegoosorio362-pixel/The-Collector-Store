@@ -128,8 +128,8 @@
             box-shadow: 0 4px 15px rgba(255, 215, 0, 0.3);
         }
         .logo img { 
-            width: 60px; 
-            height: 60px; 
+            width: 45px; 
+            height: 45px; 
             border-radius: 50%; 
             transition: all 0.3s ease;
         }
@@ -178,7 +178,42 @@
         }
         .btn { background: #ffd700; color: #1a1a1a; border: none; padding: 0.5rem 1rem; border-radius: 25px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
         .btn:hover { background: #ffed4e; transform: translateY(-2px); }
-        .hero { background: linear-gradient(135deg, #ff6b35, #f7931e); min-height: 100vh; display: flex; align-items: center; padding-top: 80px; position: relative; }
+        .hero { background: linear-gradient(135deg, #ff6b35, #f7931e); min-height: 100vh; display: flex; align-items: center; position: relative; }
+        
+        /* Controles flotantes */
+        .floating-controls {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            z-index: 1000;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .cart-btn {
+            background: #ffd700;
+            color: #1a1a1a;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        
+        .cart-btn:hover {
+            background: #ffed4e;
+            transform: translateY(-2px);
+        }
         .hero-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
         .hero-title { font-size: 3rem; font-weight: 900; color: white; margin-bottom: 1rem; line-height: 1.2; }
         .hero-subtitle { font-size: 1.2rem; color: rgba(255, 255, 255, 0.9); margin-bottom: 2rem; }
@@ -895,28 +930,20 @@
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="nav-container">
+
+    <section class="hero" id="inicio">
+        <!-- Logo y carrito flotantes -->
+        <div class="floating-controls">
             <a href="#inicio" class="logo">
                 <img src="Logo.png" alt="The Collector Store">
                 <span class="logo-text">The Collector Store</span>
             </a>
-            <ul class="nav-menu">
-                <li><a href="#productos" class="nav-link">Productos</a></li>
-                <li><a href="#ofertas" class="nav-link">Ofertas</a></li>
-                <li><a href="#contacto" class="nav-link">Contacto</a></li>
-            </ul>
-            <div class="nav-actions">
-                <button class="btn" onclick="toggleCart()">
-                    <img src="capsula.jpg" alt="Carrito" style="width: 20px; height: 20px; margin-right: 0.5rem; border-radius: 50%;">
-                    Carrito (0)
-                </button>
-                <button class="btn" onclick="toggleLogin()">👤 Login</button>
-            </div>
+            <button class="btn cart-btn" onclick="toggleCart()">
+                <img src="capsula.jpg" alt="Carrito" style="width: 20px; height: 20px; margin-right: 0.5rem; border-radius: 50%;">
+                Carrito (0)
+            </button>
         </div>
-    </header>
-
-    <section class="hero" id="inicio">
+        
         <div class="hero-content">
             <div class="hero-text">
                 <h1 class="hero-title">The Collector Store - Figuras Coleccionables</h1>
@@ -1399,7 +1426,10 @@
         }
         function updateCartDisplay() {
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            document.querySelector('.nav-actions .btn').textContent = `🛒 Carrito (${totalItems})`;
+            const cartButton = document.querySelector('.cart-btn');
+            if (cartButton) {
+                cartButton.textContent = `🛒 Carrito (${totalItems})`;
+            }
             
             const cartItems = document.getElementById('cartItems');
             const cartTotal = document.getElementById('cartTotal');
