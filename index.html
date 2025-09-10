@@ -89,25 +89,6 @@
             box-shadow: none;
         }
         
-        .header.scrolled {
-            padding: 0.5rem 0;
-            background: rgba(0, 0, 0, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-        
-        .header.scrolled .nav-menu,
-        .header.scrolled .nav-actions {
-            opacity: 0;
-            transform: translateY(-20px);
-            pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .header.scrolled .logo {
-            transform: scale(1.2);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
         .nav-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
         .logo { 
             font-size: 1.8rem; 
@@ -1208,7 +1189,6 @@
             initFilters();
             initSlider();
             initScrollAnimations();
-            initHeaderScroll();
             
             // Forzar reset del total al cargar la página
             const cartTotal = document.getElementById('cartTotal');
@@ -1218,24 +1198,6 @@
             
             updateCartDisplay(); // Inicializar el carrito correctamente
         });
-        
-        // Función para manejar el scroll del header
-        function initHeaderScroll() {
-            const header = document.querySelector('.header');
-            let lastScrollY = window.scrollY;
-            
-            window.addEventListener('scroll', () => {
-                const currentScrollY = window.scrollY;
-                
-                if (currentScrollY > 100) {
-                    header.classList.add('scrolled');
-                } else {
-                    header.classList.remove('scrolled');
-                }
-                
-                lastScrollY = currentScrollY;
-            });
-        }
         
         // Funciones del slider
         function initSlider() {
