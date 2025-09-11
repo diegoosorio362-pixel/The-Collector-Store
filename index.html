@@ -3602,6 +3602,9 @@
 
         // ===== SISTEMA DE USUARIOS Y CUENTAS =====
         
+        // Configuración de Supabase
+        let useSupabase = false; // Cambiar a true cuando configures Supabase
+        
         // Base de datos local de usuarios (fallback)
         let users = JSON.parse(localStorage.getItem('tienda_users')) || [];
         let currentUser = JSON.parse(localStorage.getItem('tienda_current_user')) || null;
@@ -3628,9 +3631,6 @@
             localStorage.setItem('tienda_users', JSON.stringify(users));
             console.log('🔍 Usuario de prueba creado:', testUser);
         }
-        
-        // Configuración de Supabase
-        let useSupabase = false; // Cambiar a true cuando configures Supabase
         
         // Función para verificar si Supabase está disponible
         function checkSupabase() {
