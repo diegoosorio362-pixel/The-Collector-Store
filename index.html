@@ -2087,7 +2087,7 @@
                     <div class="form-group">
                         <label for="regPassword">🔒 Contraseña</label>
                         <input type="password" id="regPassword" required placeholder="••••••••"
-                               pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':\"|<>?,./^`~]).{8,}$"
+                               minlength="8"
                                title="La contraseña debe tener al menos 8 caracteres, incluyendo: una letra minúscula, una mayúscula, un número y un símbolo especial">
                         <small class="password-help">
                             <strong>Requisitos de contraseña:</strong><br>
@@ -3557,8 +3557,41 @@
             localStorage.setItem('tienda_current_user', JSON.stringify(user));
         }
         
+        // Función para validar contraseña
+        function validatePassword(password) {
+            const minLength = 8;
+            const hasLowerCase = /[a-z]/.test(password);
+            const hasUpperCase = /[A-Z]/.test(password);
+            const hasNumbers = /\d/.test(password);
+            const hasSpecialChar = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(password);
+            
+            if (password.length < minLength) {
+                return { valid: false, message: 'La contraseña debe tener al menos 8 caracteres.' };
+            }
+            if (!hasLowerCase) {
+                return { valid: false, message: 'La contraseña debe contener al menos una letra minúscula (a-z).' };
+            }
+            if (!hasUpperCase) {
+                return { valid: false, message: 'La contraseña debe contener al menos una letra mayúscula (A-Z).' };
+            }
+            if (!hasNumbers) {
+                return { valid: false, message: 'La contraseña debe contener al menos un número (0-9).' };
+            }
+            if (!hasSpecialChar) {
+                return { valid: false, message: 'La contraseña debe contener al menos un símbolo especial (!@#$%^&*()_+-=[]{};\':"\\|,.<>/?`~).' };
+            }
+            
+            return { valid: true, message: 'Contraseña válida.' };
+        }
+
         // Función para registrar nuevo usuario
         async function registerUser(userData) {
+            // Validar contraseña antes de enviar
+            const passwordValidation = validatePassword(userData.password);
+            if (!passwordValidation.valid) {
+                throw new Error(passwordValidation.message);
+            }
+            
             // Usar Supabase si está disponible y configurado
             if (useSupabase && checkSupabase()) {
                 return await registerUserSupabase(userData);
