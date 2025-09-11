@@ -1493,6 +1493,51 @@
             box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
         }
 
+        /* Estilos para usuario logueado */
+        .user-logged-in {
+            position: relative;
+        }
+
+        .user-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            min-width: 200px;
+            z-index: 1000;
+            display: none;
+            overflow: hidden;
+        }
+
+        .user-logged-in:hover .user-dropdown {
+            display: block;
+        }
+
+        .user-dropdown a {
+            display: block;
+            padding: 0.75rem 1rem;
+            color: #333;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .user-dropdown a:hover {
+            background: #f8f9fa;
+            color: #ff6b35;
+        }
+
+        .user-dropdown a:last-child {
+            border-bottom: none;
+            color: #dc3545;
+        }
+
+        .user-dropdown a:last-child:hover {
+            background: #f8d7da;
+        }
+
         @media (max-width: 768px) {
             .admin-row {
                 grid-template-columns: 1fr;
@@ -2215,6 +2260,13 @@
             initHeaderScroll();
             updateSliderPrices(); // Actualizar precios del slider
             
+            // Inicializar sistema de usuarios
+            if (currentUser) {
+                updateUIForLoggedUser(currentUser);
+            } else {
+                updateUIForGuest();
+            }
+            
             // Forzar reset del total al cargar la página
             if (domCache.cartTotal) {
                 domCache.cartTotal.textContent = 'Total: COP $0';
@@ -2692,23 +2744,31 @@
             const password = document.getElementById('password').value;
             const rememberMe = document.getElementById('rememberMe').checked;
             
-            if (email && password) {
-                // Simular validación
-                if (email.includes('@') && password.length >= 6) {
-                    alert('¡Inicio de sesión exitoso! 🎉');
-                    toggleLogin();
-                    document.getElementById('loginForm').reset();
+            if (!email || !password) {
+                alert('❌ Por favor completa todos los campos');
+                return;
+            }
+            
+            try {
+                const user = authenticateUser(email, password);
+                if (user) {
+                    alert(`✅ ¡Bienvenido, ${user.firstName}!\n\nSesión iniciada correctamente`);
                     
-                    // Guardar en localStorage si "Recordarme" está marcado
                     if (rememberMe) {
-                        localStorage.setItem('userEmail', email);
+                        localStorage.setItem('rememberedEmail', email);
                         localStorage.setItem('rememberMe', 'true');
                     }
+                    
+                    // Actualizar interfaz para usuario logueado
+                    updateUIForLoggedUser(user);
+                    
+                    toggleLogin();
+                    document.getElementById('loginForm').reset();
                 } else {
-                    alert('❌ Email inválido o contraseña muy corta (mínimo 6 caracteres)');
+                    alert('❌ Email o contraseña incorrectos');
                 }
-            } else {
-                alert('❌ Por favor completa todos los campos');
+            } catch (error) {
+                alert('❌ Error al iniciar sesión: ' + error.message);
             }
         }
 
@@ -2747,10 +2807,31 @@
                 return;
             }
             
-            // Simular registro exitoso
-            alert(`¡Registro exitoso! 🎉\n\nBienvenido ${name}!\n\nTu cuenta ha sido creada correctamente.`);
-            toggleRegister();
-            document.getElementById('registerForm').reset();
+            try {
+                const firstName = name.split(' ')[0] || '';
+                const lastName = name.split(' ').slice(1).join(' ') || '';
+                
+                const userData = {
+                    firstName: firstName,
+                    lastName: lastName,
+                    email: email,
+                    password: password,
+                    phone: phone
+                };
+                
+                const newUser = registerUser(userData);
+                alert(`✅ ¡Cuenta creada exitosamente!\n\nBienvenido, ${newUser.firstName} ${newUser.lastName}`);
+                
+                // Iniciar sesión automáticamente
+                currentUser = newUser;
+                saveCurrentUser(newUser);
+                updateUIForLoggedUser(newUser);
+                
+                toggleRegister();
+                document.getElementById('registerForm').reset();
+            } catch (error) {
+                alert('❌ Error al crear cuenta: ' + error.message);
+            }
         }
 
         function handleForgotPassword(e) {
@@ -2933,6 +3014,115 @@
             }
         });
 
+        // ===== SISTEMA DE USUARIOS Y CUENTAS =====
+        
+        // Base de datos local de usuarios
+        let users = JSON.parse(localStorage.getItem('tienda_users')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('tienda_current_user')) || null;
+        
+        // Función para guardar usuarios en localStorage
+        function saveUsers() {
+            localStorage.setItem('tienda_users', JSON.stringify(users));
+        }
+        
+        // Función para guardar usuario actual
+        function saveCurrentUser(user) {
+            localStorage.setItem('tienda_current_user', JSON.stringify(user));
+        }
+        
+        // Función para registrar nuevo usuario
+        function registerUser(userData) {
+            // Validar que el email no exista
+            if (users.find(u => u.email === userData.email)) {
+                throw new Error('Este email ya está registrado');
+            }
+            
+            // Crear nuevo usuario
+            const newUser = {
+                id: Date.now(), // ID único basado en timestamp
+                email: userData.email,
+                password: userData.password, // En producción, esto debería estar encriptado
+                firstName: userData.firstName,
+                lastName: userData.lastName,
+                phone: userData.phone || '',
+                address: userData.address || '',
+                city: userData.city || '',
+                postalCode: userData.postalCode || '',
+                country: userData.country || 'México',
+                dateRegistered: new Date().toISOString(),
+                isActive: true,
+                orders: [],
+                wishlist: [],
+                preferences: {
+                    newsletter: false,
+                    notifications: true,
+                    currency: 'COP'
+                }
+            };
+            
+            // Agregar usuario a la base de datos
+            users.push(newUser);
+            saveUsers();
+            
+            return newUser;
+        }
+        
+        // Función para autenticar usuario
+        function authenticateUser(email, password) {
+            const user = users.find(u => u.email === email && u.password === password && u.isActive);
+            if (user) {
+                currentUser = user;
+                saveCurrentUser(user);
+                return user;
+            }
+            return null;
+        }
+        
+        // Función para cerrar sesión
+        function logoutUser() {
+            currentUser = null;
+            localStorage.removeItem('tienda_current_user');
+        }
+        
+        // Función para actualizar perfil de usuario
+        function updateUserProfile(userId, updateData) {
+            const userIndex = users.findIndex(u => u.id === userId);
+            if (userIndex !== -1) {
+                users[userIndex] = { ...users[userIndex], ...updateData };
+                saveUsers();
+                
+                // Actualizar usuario actual si es el mismo
+                if (currentUser && currentUser.id === userId) {
+                    currentUser = users[userIndex];
+                    saveCurrentUser(currentUser);
+                }
+                
+                return users[userIndex];
+            }
+            return null;
+        }
+        
+        // Función para agregar pedido al usuario
+        function addOrderToUser(userId, orderData) {
+            const user = users.find(u => u.id === userId);
+            if (user) {
+                const newOrder = {
+                    id: Date.now(),
+                    date: new Date().toISOString(),
+                    items: orderData.items,
+                    total: orderData.total,
+                    status: 'pending',
+                    shippingAddress: orderData.shippingAddress,
+                    paymentMethod: orderData.paymentMethod || 'transferencia'
+                };
+                
+                user.orders.push(newOrder);
+                saveUsers();
+                return newOrder;
+            }
+            return null;
+        }
+
         // ===== FUNCIONES PARA AGREGAR PRODUCTOS EN LOTE =====
         
         // Función para agregar múltiples productos de una vez
@@ -3021,6 +3211,83 @@
             }));
             
             return addBulkProducts(newProducts);
+        }
+
+        // ===== FUNCIONES DE INTERFAZ DE USUARIO =====
+        
+        // Función para actualizar la interfaz cuando el usuario está logueado
+        function updateUIForLoggedUser(user) {
+            // Actualizar botón de login por botón de perfil
+            const loginBtn = document.querySelector('.login-btn');
+            if (loginBtn) {
+                loginBtn.innerHTML = `
+                    <span>👤 ${user.firstName}</span>
+                    <div class="user-dropdown">
+                        <a href="#" onclick="showUserProfile()">Mi Perfil</a>
+                        <a href="#" onclick="showUserOrders()">Mis Pedidos</a>
+                        <a href="#" onclick="logoutUser()">Cerrar Sesión</a>
+                    </div>
+                `;
+                loginBtn.classList.add('user-logged-in');
+            }
+            
+            // Mostrar mensaje de bienvenida
+            console.log(`Usuario logueado: ${user.firstName} ${user.lastName}`);
+        }
+        
+        // Función para actualizar la interfaz cuando no hay usuario logueado
+        function updateUIForGuest() {
+            const loginBtn = document.querySelector('.login-btn');
+            if (loginBtn) {
+                loginBtn.innerHTML = 'Iniciar Sesión';
+                loginBtn.classList.remove('user-logged-in');
+            }
+        }
+        
+        // Función para mostrar perfil de usuario
+        function showUserProfile() {
+            if (!currentUser) return;
+            
+            const profileData = `
+                👤 <strong>${currentUser.firstName} ${currentUser.lastName}</strong>
+                📧 ${currentUser.email}
+                📱 ${currentUser.phone || 'No especificado'}
+                📍 ${currentUser.address || 'No especificado'}
+                🏙️ ${currentUser.city || 'No especificado'}
+                📦 Pedidos: ${currentUser.orders.length}
+                ❤️ Lista de deseos: ${currentUser.wishlist.length} items
+            `;
+            
+            alert(`📋 <strong>Mi Perfil</strong>\n\n${profileData}`);
+        }
+        
+        // Función para mostrar pedidos del usuario
+        function showUserOrders() {
+            if (!currentUser) return;
+            
+            if (currentUser.orders.length === 0) {
+                alert('📦 No tienes pedidos aún\n\n¡Explora nuestros productos!');
+                return;
+            }
+            
+            let ordersText = '📦 <strong>Mis Pedidos</strong>\n\n';
+            currentUser.orders.forEach((order, index) => {
+                ordersText += `${index + 1}. Pedido #${order.id}\n`;
+                ordersText += `   Fecha: ${new Date(order.date).toLocaleDateString()}\n`;
+                ordersText += `   Total: ${formatPrice(order.total)}\n`;
+                ordersText += `   Estado: ${order.status}\n\n`;
+            });
+            
+            alert(ordersText);
+        }
+        
+        // Función para cerrar sesión
+        function logoutUser() {
+            if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
+                logoutUser();
+                updateUIForGuest();
+                alert('👋 ¡Hasta luego!');
+            }
         }
 
         // ===== FUNCIONES DEL PANEL DE ADMINISTRACIÓN =====
