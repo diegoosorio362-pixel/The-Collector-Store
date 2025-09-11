@@ -3606,8 +3606,31 @@
         let users = JSON.parse(localStorage.getItem('tienda_users')) || [];
         let currentUser = JSON.parse(localStorage.getItem('tienda_current_user')) || null;
         
+        // 🔍 LOGS DE DEPURACIÓN INICIAL
+        console.log('🔍 INICIO DE LA APLICACIÓN:');
+        console.log('Usuarios en localStorage:', users.length);
+        console.log('Usuario actual:', currentUser);
+        console.log('useSupabase:', useSupabase);
+        
+        // Crear usuario de prueba si no existe
+        if (users.length === 0) {
+            const testUser = {
+                id: 1,
+                firstName: 'Test',
+                lastName: 'Usuario',
+                email: 'test@test.com',
+                password: '123456',
+                phone: '1234567890',
+                isActive: true,
+                dateRegistered: new Date().toISOString()
+            };
+            users.push(testUser);
+            localStorage.setItem('tienda_users', JSON.stringify(users));
+            console.log('🔍 Usuario de prueba creado:', testUser);
+        }
+        
         // Configuración de Supabase
-        let useSupabase = true; // Cambiar a true cuando configures Supabase
+        let useSupabase = false; // Cambiar a true cuando configures Supabase
         
         // Función para verificar si Supabase está disponible
         function checkSupabase() {
