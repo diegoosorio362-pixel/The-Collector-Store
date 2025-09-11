@@ -984,16 +984,42 @@
             box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
         }
         
-        .password-help {
-            display: block;
-            margin-top: 5px;
-            font-size: 12px;
-            color: #666;
-            line-height: 1.4;
+        .password-requirements {
+            margin-top: 10px;
+            padding: 12px;
             background: #f8f9fa;
-            padding: 8px;
-            border-radius: 4px;
-            border-left: 3px solid #007bff;
+            border-radius: 8px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            margin: 6px 0;
+            font-size: 13px;
+        }
+        
+        .checkmark {
+            margin-right: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .requirement-item.valid .checkmark {
+            color: #28a745;
+        }
+        
+        .requirement-item.invalid .checkmark {
+            color: #dc3545;
+        }
+        
+        .requirement-text {
+            color: #666;
+        }
+        
+        .requirement-item.valid .requirement-text {
+            color: #28a745;
+            font-weight: 500;
         }
         
         .form-group input:invalid {
@@ -2089,14 +2115,29 @@
                         <input type="password" id="regPassword" required placeholder="••••••••"
                                minlength="8"
                                title="La contraseña debe tener al menos 8 caracteres, incluyendo: una letra minúscula, una mayúscula, un número y un símbolo especial">
-                        <small class="password-help">
-                            <strong>Requisitos de contraseña:</strong><br>
-                            • Al menos 8 caracteres<br>
-                            • Una letra minúscula (a-z)<br>
-                            • Una letra mayúscula (A-Z)<br>
-                            • Un número (0-9)<br>
-                            • Un símbolo especial (!@#$%^&*()_+-=[]{};':"|<>?,./^`~)
-                        </small>
+                        <div class="password-requirements">
+                            <strong>Requisitos de contraseña:</strong>
+                            <div class="requirement-item" id="req-length">
+                                <span class="checkmark">❌</span>
+                                <span class="requirement-text">Al menos 8 caracteres</span>
+                            </div>
+                            <div class="requirement-item" id="req-lowercase">
+                                <span class="checkmark">❌</span>
+                                <span class="requirement-text">Una letra minúscula (a-z)</span>
+                            </div>
+                            <div class="requirement-item" id="req-uppercase">
+                                <span class="checkmark">❌</span>
+                                <span class="requirement-text">Una letra mayúscula (A-Z)</span>
+                            </div>
+                            <div class="requirement-item" id="req-number">
+                                <span class="checkmark">❌</span>
+                                <span class="requirement-text">Un número (0-9)</span>
+                            </div>
+                            <div class="requirement-item" id="req-special">
+                                <span class="checkmark">❌</span>
+                                <span class="requirement-text">Un símbolo especial (!@#$%^&*()_+-=[]{};':"|<>?,./^`~)</span>
+                            </div>
+                        </div>
                     </div>
                     <div class="form-group">
                         <label for="regConfirmPassword">🔒 Confirmar Contraseña</label>
@@ -2514,6 +2555,14 @@
             
             // Inicializar estado de Supabase
             updateSupabaseStatus();
+            
+            // Agregar validación en tiempo real para contraseña
+            const passwordInput = document.getElementById('regPassword');
+            if (passwordInput) {
+                passwordInput.addEventListener('input', function() {
+                    updatePasswordRequirements(this.value);
+                });
+            }
             
             // Forzar reset del total al cargar la página
             if (domCache.cartTotal) {
@@ -3582,6 +3631,38 @@
             }
             
             return { valid: true, message: 'Contraseña válida.' };
+        }
+
+        // Función para actualizar checkmarks de contraseña en tiempo real
+        function updatePasswordRequirements(password) {
+            const requirements = {
+                length: password.length >= 8,
+                lowercase: /[a-z]/.test(password),
+                uppercase: /[A-Z]/.test(password),
+                number: /\d/.test(password),
+                special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?`~]/.test(password)
+            };
+
+            // Actualizar cada requisito
+            Object.keys(requirements).forEach((req, index) => {
+                const element = document.getElementById(`req-${req === 'length' ? 'length' : 
+                    req === 'lowercase' ? 'lowercase' : 
+                    req === 'uppercase' ? 'uppercase' : 
+                    req === 'number' ? 'number' : 'special'}`);
+                
+                if (element) {
+                    const checkmark = element.querySelector('.checkmark');
+                    if (requirements[req]) {
+                        element.classList.remove('invalid');
+                        element.classList.add('valid');
+                        checkmark.textContent = '✅';
+                    } else {
+                        element.classList.remove('valid');
+                        element.classList.add('invalid');
+                        checkmark.textContent = '❌';
+                    }
+                }
+            });
         }
 
         // Función para registrar nuevo usuario
