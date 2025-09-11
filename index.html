@@ -1029,6 +1029,174 @@
         .form-group input:valid {
             border-color: #28a745;
         }
+        
+        /* Panel de Usuario */
+        .user-panel {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 400px;
+            height: 100vh;
+            background: white;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+        
+        .user-panel.active {
+            right: 0;
+        }
+        
+        .user-panel-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        
+        .user-details h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        
+        .user-details p {
+            margin: 5px 0 0 0;
+            opacity: 0.8;
+            font-size: 14px;
+        }
+        
+        .close-panel {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 5px;
+        }
+        
+        .user-panel-content {
+            padding: 0;
+        }
+        
+        .user-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 15px 10px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab-btn.active {
+            background: white;
+            border-bottom-color: #667eea;
+            color: #667eea;
+        }
+        
+        .tab-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .tab-content {
+            padding: 20px;
+        }
+        
+        .tab-pane {
+            display: none;
+        }
+        
+        .tab-pane.active {
+            display: block;
+        }
+        
+        .user-info-grid {
+            display: grid;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .info-item label {
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .info-item span {
+            color: #6c757d;
+        }
+        
+        .orders-list, .wishlist-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .no-orders, .no-items {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 20px;
+        }
+        
+        .settings-options {
+            margin: 20px 0;
+        }
+        
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        
+        .setting-item label {
+            font-weight: 500;
+        }
+        
+        .setting-item input, .setting-item select {
+            padding: 5px 10px;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+        }
         .form-options {
             display: flex;
             justify-content: space-between;
@@ -2189,6 +2357,109 @@
                     ¿Recordaste tu contraseña? 
                     <a href="#" onclick="showLogin()">Inicia sesión aquí</a>
                 </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Panel de Usuario -->
+    <div id="userPanel" class="user-panel">
+        <div class="user-panel-header">
+            <div class="user-info">
+                <div class="user-avatar">
+                    <span id="userInitials">U</span>
+                </div>
+                <div class="user-details">
+                    <h3 id="userName">Usuario</h3>
+                    <p id="userEmail">usuario@email.com</p>
+                </div>
+            </div>
+            <button class="close-panel" onclick="closeUserPanel()">&times;</button>
+        </div>
+        
+        <div class="user-panel-content">
+            <div class="user-tabs">
+                <button class="tab-btn active" onclick="showUserTab('profile')">👤 Perfil</button>
+                <button class="tab-btn" onclick="showUserTab('orders')">📦 Pedidos</button>
+                <button class="tab-btn" onclick="showUserTab('wishlist')">❤️ Favoritos</button>
+                <button class="tab-btn" onclick="showUserTab('settings')">⚙️ Configuración</button>
+            </div>
+            
+            <div class="tab-content">
+                <!-- Tab Perfil -->
+                <div id="profile-tab" class="tab-pane active">
+                    <h4>Información Personal</h4>
+                    <div class="user-info-grid">
+                        <div class="info-item">
+                            <label>Nombre completo:</label>
+                            <span id="userFullName">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Email:</label>
+                            <span id="userEmailDisplay">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Teléfono:</label>
+                            <span id="userPhone">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Dirección:</label>
+                            <span id="userAddress">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Ciudad:</label>
+                            <span id="userCity">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>País:</label>
+                            <span id="userCountry">-</span>
+                        </div>
+                        <div class="info-item">
+                            <label>Miembro desde:</label>
+                            <span id="userJoinDate">-</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-secondary" onclick="editProfile()">✏️ Editar Perfil</button>
+                </div>
+                
+                <!-- Tab Pedidos -->
+                <div id="orders-tab" class="tab-pane">
+                    <h4>Mis Pedidos</h4>
+                    <div id="userOrdersList" class="orders-list">
+                        <p class="no-orders">No tienes pedidos aún</p>
+                    </div>
+                </div>
+                
+                <!-- Tab Favoritos -->
+                <div id="wishlist-tab" class="tab-pane">
+                    <h4>Mis Favoritos</h4>
+                    <div id="userWishlist" class="wishlist-list">
+                        <p class="no-items">No tienes productos en favoritos</p>
+                    </div>
+                </div>
+                
+                <!-- Tab Configuración -->
+                <div id="settings-tab" class="tab-pane">
+                    <h4>Configuración de Cuenta</h4>
+                    <div class="settings-options">
+                        <div class="setting-item">
+                            <label>Notificaciones por email:</label>
+                            <input type="checkbox" id="emailNotifications" checked>
+                        </div>
+                        <div class="setting-item">
+                            <label>Newsletter:</label>
+                            <input type="checkbox" id="newsletter">
+                        </div>
+                        <div class="setting-item">
+                            <label>Moneda preferida:</label>
+                            <select id="preferredCurrency">
+                                <option value="COP">Peso Colombiano (COP)</option>
+                                <option value="USD">Dólar Americano (USD)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary" onclick="saveSettings()">💾 Guardar Configuración</button>
+                    <button class="btn btn-danger" onclick="logoutUser()">🚪 Cerrar Sesión</button>
+                </div>
             </div>
         </div>
     </div>
@@ -3884,6 +4155,7 @@
                 loginBtn.innerHTML = `
                     <span>👤 ${user.firstName}</span>
                     <div class="user-dropdown">
+                        <a href="#" onclick="openUserPanel()">Mi Panel</a>
                         <a href="#" onclick="showUserProfile()">Mi Perfil</a>
                         <a href="#" onclick="showUserOrders()">Mis Pedidos</a>
                         <a href="#" onclick="logoutUser()">Cerrar Sesión</a>
@@ -4240,6 +4512,149 @@ anonKey: 'tu-anon-key'
                 }
             });
         });
+
+        // ===== FUNCIONES DEL PANEL DE USUARIO =====
+        
+        // Función para abrir el panel de usuario
+        function openUserPanel() {
+            const userPanel = document.getElementById('userPanel');
+            if (userPanel && currentUser) {
+                loadUserPanelData();
+                userPanel.classList.add('active');
+            }
+        }
+
+        // Función para cerrar el panel de usuario
+        function closeUserPanel() {
+            const userPanel = document.getElementById('userPanel');
+            if (userPanel) {
+                userPanel.classList.remove('active');
+            }
+        }
+
+        // Función para cargar datos del usuario en el panel
+        function loadUserPanelData() {
+            if (!currentUser) return;
+
+            // Actualizar header del panel
+            document.getElementById('userName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+            document.getElementById('userEmail').textContent = currentUser.email;
+            
+            // Generar iniciales para el avatar
+            const initials = `${currentUser.firstName.charAt(0)}${currentUser.lastName.charAt(0)}`.toUpperCase();
+            document.getElementById('userInitials').textContent = initials;
+
+            // Actualizar información del perfil
+            document.getElementById('userFullName').textContent = `${currentUser.firstName} ${currentUser.lastName}`;
+            document.getElementById('userEmailDisplay').textContent = currentUser.email;
+            document.getElementById('userPhone').textContent = currentUser.phone || 'No especificado';
+            document.getElementById('userAddress').textContent = currentUser.address || 'No especificado';
+            document.getElementById('userCity').textContent = currentUser.city || 'No especificado';
+            document.getElementById('userCountry').textContent = currentUser.country || 'No especificado';
+            
+            // Formatear fecha de registro
+            const joinDate = new Date(currentUser.dateRegistered || Date.now());
+            document.getElementById('userJoinDate').textContent = joinDate.toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
+            // Cargar pedidos
+            loadUserOrders();
+            
+            // Cargar favoritos
+            loadUserWishlist();
+            
+            // Cargar configuración
+            loadUserSettings();
+        }
+
+        // Función para cambiar entre tabs del panel
+        function showUserTab(tabName) {
+            // Ocultar todos los tabs
+            document.querySelectorAll('.tab-pane').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remover active de todos los botones
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Mostrar el tab seleccionado
+            document.getElementById(`${tabName}-tab`).classList.add('active');
+            
+            // Activar el botón correspondiente
+            event.target.classList.add('active');
+        }
+
+        // Función para cargar pedidos del usuario
+        function loadUserOrders() {
+            const ordersList = document.getElementById('userOrdersList');
+            if (currentUser.orders && currentUser.orders.length > 0) {
+                ordersList.innerHTML = currentUser.orders.map((order, index) => `
+                    <div class="order-item">
+                        <h5>Pedido #${index + 1}</h5>
+                        <p>Fecha: ${new Date(order.date).toLocaleDateString('es-ES')}</p>
+                        <p>Total: ${formatPrice(order.total)}</p>
+                        <p>Estado: ${order.status || 'Pendiente'}</p>
+                    </div>
+                `).join('');
+            } else {
+                ordersList.innerHTML = '<p class="no-orders">No tienes pedidos aún</p>';
+            }
+        }
+
+        // Función para cargar favoritos del usuario
+        function loadUserWishlist() {
+            const wishlistList = document.getElementById('userWishlist');
+            if (currentUser.wishlist && currentUser.wishlist.length > 0) {
+                wishlistList.innerHTML = currentUser.wishlist.map(itemId => {
+                    const product = products.find(p => p.id === itemId);
+                    return product ? `
+                        <div class="wishlist-item">
+                            <img src="${product.image}" alt="${product.name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
+                            <div>
+                                <h6>${product.name}</h6>
+                                <p>${formatPrice(product.price)}</p>
+                            </div>
+                        </div>
+                    ` : '';
+                }).join('');
+            } else {
+                wishlistList.innerHTML = '<p class="no-items">No tienes productos en favoritos</p>';
+            }
+        }
+
+        // Función para cargar configuración del usuario
+        function loadUserSettings() {
+            const prefs = currentUser.preferences || {};
+            document.getElementById('emailNotifications').checked = prefs.notifications !== false;
+            document.getElementById('newsletter').checked = prefs.newsletter === true;
+            document.getElementById('preferredCurrency').value = prefs.currency || 'COP';
+        }
+
+        // Función para guardar configuración
+        function saveSettings() {
+            if (!currentUser) return;
+
+            const newPrefs = {
+                notifications: document.getElementById('emailNotifications').checked,
+                newsletter: document.getElementById('newsletter').checked,
+                currency: document.getElementById('preferredCurrency').value
+            };
+
+            currentUser.preferences = newPrefs;
+            saveCurrentUser(currentUser);
+            
+            alert('✅ Configuración guardada correctamente');
+        }
+
+        // Función para editar perfil
+        function editProfile() {
+            alert('✏️ Función de edición de perfil próximamente disponible');
+        }
     </script>
 </body>
 </html>
