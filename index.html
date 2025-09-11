@@ -3320,39 +3320,38 @@
             console.log('Email:', email);
             console.log('Password:', password);
             console.log('Remember Me:', rememberMe);
-            console.log('Email type:', typeof email);
-            console.log('Password type:', typeof password);
             
             if (!email || !password) {
                 alert('❌ Por favor completa todos los campos');
                 return;
             }
             
-            try {
-                const user = await authenticateUser(email, password);
-                if (user) {
-                    alert(`✅ ¡Bienvenido, ${user.firstName}!\n\nSesión iniciada correctamente`);
-                    
-                    if (rememberMe) {
-                        localStorage.setItem('rememberedEmail', email);
-                        localStorage.setItem('rememberMe', 'true');
-                    }
-                    
-                    // Actualizar interfaz para usuario logueado
-                    updateUIForLoggedUser(user);
-                    
-                    // Abrir panel de usuario automáticamente
-                    setTimeout(() => {
-                        openUserPanel();
-                    }, 1000);
-                    
-                    toggleLogin();
-                    document.getElementById('loginForm').reset();
-                } else {
-                    alert('❌ Email o contraseña incorrectos');
+            // LOGIN SIMPLIFICADO - Buscar directamente en localStorage
+            console.log('🔍 Buscando usuario directamente...');
+            const user = users.find(u => u.email === email && u.password === password);
+            console.log('🔍 Usuario encontrado:', user);
+            
+            if (user) {
+                currentUser = user;
+                saveCurrentUser(user);
+                updateUIForLoggedUser(user);
+                
+                // Abrir panel de usuario automáticamente
+                setTimeout(() => {
+                    openUserPanel();
+                }, 1000);
+                
+                alert(`✅ ¡Bienvenido, ${user.firstName}!\n\nSesión iniciada correctamente`);
+                
+                if (rememberMe) {
+                    localStorage.setItem('rememberedEmail', email);
+                    localStorage.setItem('rememberMe', 'true');
                 }
-            } catch (error) {
-                alert('❌ Error al iniciar sesión: ' + error.message);
+                
+                toggleLogin();
+                document.getElementById('loginForm').reset();
+            } else {
+                alert('❌ Email o contraseña incorrectos\n\nPrueba con:\nEmail: test@test.com\nPassword: 123456');
             }
         }
 
@@ -4753,6 +4752,32 @@ anonKey: 'tu-anon-key'
             
             console.log('🔍 Usuario de prueba creado:', testUser);
             alert('✅ Usuario de prueba creado:\n\nEmail: test@test.com\nPassword: 123456');
+        }
+
+        // Función de login de emergencia (bypass completo)
+        function emergencyLogin() {
+            const testUser = {
+                id: 1,
+                firstName: 'Test',
+                lastName: 'Usuario',
+                email: 'test@test.com',
+                password: '123456',
+                phone: '1234567890',
+                isActive: true,
+                dateRegistered: new Date().toISOString()
+            };
+            
+            currentUser = testUser;
+            saveCurrentUser(testUser);
+            updateUIForLoggedUser(testUser);
+            
+            // Abrir panel de usuario automáticamente
+            setTimeout(() => {
+                openUserPanel();
+            }, 1000);
+            
+            alert('✅ Login de emergencia exitoso!\n\nBienvenido, Test Usuario');
+            console.log('🔍 Login de emergencia completado:', testUser);
         }
     </script>
 </body>
