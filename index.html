@@ -5,37 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Collector Store - ¡Tienda Automática con GitHub Actions!</title>
     
-    <!-- Firebase SDK -->
-    <script type="module">
-        // Import the functions you need from the SDKs you need
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-        // Your web app's Firebase configuration
-        const firebaseConfig = {
-            // AQUÍ VA TU CONFIGURACIÓN DE FIREBASE
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Configuración de Supabase
+        const supabaseConfig = {
+            // AQUÍ VA TU CONFIGURACIÓN DE SUPABASE
             // Reemplaza estos valores con los de tu proyecto
-            apiKey: "tu-api-key",
-            authDomain: "tu-proyecto.firebaseapp.com",
-            projectId: "tu-proyecto-id",
-            storageBucket: "tu-proyecto.appspot.com",
-            messagingSenderId: "123456789",
-            appId: "tu-app-id"
+            url: 'https://newqnezadbulxfadvbjt.supabase.co',
+            anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5ld3FuZXphZGJ1bHhmYWR2Ymp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc1NTc4MDMsImV4cCI6MjA3MzEzMzgwM30.wcnpz2cqlIbe68y7wxgiS1mEDYDHsmaEt9f_A0veabA'
         };
 
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
+        // Inicializar Supabase
+        let supabase = null;
+        if (supabaseConfig.url !== 'https://tu-proyecto.supabase.co') {
+            supabase = supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey);
+            console.log('🐘 Supabase inicializado correctamente');
+        } else {
+            console.log('⚠️ Supabase no configurado - usando localStorage');
+        }
 
         // Hacer disponible globalmente
-        window.db = db;
-        window.auth = auth;
-        window.firebaseAuth = { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut };
-        window.firebaseFirestore = { collection, addDoc, getDocs, doc, updateDoc, deleteDoc };
-        
-        console.log('🔥 Firebase inicializado correctamente');
+        window.supabase = supabase;
     </script>
     
     <style>
@@ -2305,10 +2296,10 @@
                 </div>
                 
                 <div class="admin-section">
-                    <h5>🔥 Configuración de Firebase</h5>
-                    <p>Estado actual: <span id="firebaseStatus">❌ No configurado</span></p>
-                    <button class="admin-btn admin-btn-secondary" onclick="toggleFirebaseConfig()">
-                        🔧 Configurar Firebase
+                    <h5>🐘 Configuración de Supabase (PostgreSQL)</h5>
+                    <p>Estado actual: <span id="supabaseStatus">❌ No configurado</span></p>
+                    <button class="admin-btn admin-btn-secondary" onclick="toggleSupabaseConfig()">
+                        🔧 Configurar Supabase
                     </button>
                 </div>
                 
@@ -2483,8 +2474,8 @@
                 updateUIForGuest();
             }
             
-            // Inicializar estado de Firebase
-            updateFirebaseStatus();
+            // Inicializar estado de Supabase
+            updateSupabaseStatus();
             
             // Forzar reset del total al cargar la página
             if (domCache.cartTotal) {
@@ -3239,14 +3230,167 @@
         let users = JSON.parse(localStorage.getItem('tienda_users')) || [];
         let currentUser = JSON.parse(localStorage.getItem('tienda_current_user')) || null;
         
-        // Configuración de Firebase
-        let useFirebase = false; // Cambiar a true cuando configures Firebase
+        // Configuración de Supabase
+        let useSupabase = true; // Cambiar a true cuando configures Supabase
         
-        // Función para verificar si Firebase está disponible
-        function checkFirebase() {
-            return window.db && window.auth && window.firebaseAuth;
+        // Función para verificar si Supabase está disponible
+        function checkSupabase() {
+            return window.supabase && window.supabase !== null;
         }
         
+        // ===== FUNCIONES DE SUPABASE =====
+        
+        // Función para registrar usuario en Supabase
+        async function registerUserSupabase(userData) {
+            try {
+                // Crear usuario en Supabase Auth
+                const { data: authData, error: authError } = await window.supabase.auth.signUp({
+                    email: userData.email,
+                    password: userData.password,
+                    options: {
+                        data: {
+                            first_name: userData.firstName,
+                            last_name: userData.lastName,
+                            phone: userData.phone || ''
+                        }
+                    }
+                });
+
+                if (authError) throw authError;
+
+                // Crear perfil en la tabla users
+                const { data: profileData, error: profileError } = await window.supabase
+                    .from('users')
+                    .insert([
+                        {
+                            id: authData.user.id,
+                            first_name: userData.firstName,
+                            last_name: userData.lastName,
+                            email: userData.email,
+                            phone: userData.phone || '',
+                            address: userData.address || '',
+                            city: userData.city || '',
+                            postal_code: userData.postalCode || '',
+                            country: userData.country || 'México',
+                            date_registered: new Date().toISOString(),
+                            is_active: true,
+                            preferences: {
+                                newsletter: false,
+                                notifications: true,
+                                currency: 'COP'
+                            }
+                        }
+                    ])
+                    .select();
+
+                if (profileError) throw profileError;
+
+                return {
+                    id: authData.user.id,
+                    firstName: userData.firstName,
+                    lastName: userData.lastName,
+                    email: userData.email,
+                    phone: userData.phone || '',
+                    address: userData.address || '',
+                    city: userData.city || '',
+                    postalCode: userData.postalCode || '',
+                    country: userData.country || 'México',
+                    dateRegistered: new Date().toISOString(),
+                    isActive: true,
+                    orders: [],
+                    wishlist: [],
+                    preferences: {
+                        newsletter: false,
+                        notifications: true,
+                        currency: 'COP'
+                    }
+                };
+            } catch (error) {
+                throw new Error('Error al registrar usuario: ' + error.message);
+            }
+        }
+        
+        // Función para autenticar usuario en Supabase
+        async function authenticateUserSupabase(email, password) {
+            try {
+                // Autenticar en Supabase Auth
+                const { data: authData, error: authError } = await window.supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (authError) throw authError;
+
+                // Obtener datos del usuario de la tabla users
+                const { data: userData, error: userError } = await window.supabase
+                    .from('users')
+                    .select('*')
+                    .eq('id', authData.user.id)
+                    .single();
+
+                if (userError) throw userError;
+
+                return {
+                    id: userData.id,
+                    firstName: userData.first_name,
+                    lastName: userData.last_name,
+                    email: userData.email,
+                    phone: userData.phone || '',
+                    address: userData.address || '',
+                    city: userData.city || '',
+                    postalCode: userData.postal_code || '',
+                    country: userData.country || 'México',
+                    dateRegistered: userData.date_registered,
+                    isActive: userData.is_active,
+                    orders: userData.orders || [],
+                    wishlist: userData.wishlist || [],
+                    preferences: userData.preferences || {
+                        newsletter: false,
+                        notifications: true,
+                        currency: 'COP'
+                    }
+                };
+            } catch (error) {
+                throw new Error('Error al autenticar usuario: ' + error.message);
+            }
+        }
+        
+        // Función para obtener todos los usuarios de Supabase
+        async function getUsersSupabase() {
+            try {
+                const { data, error } = await window.supabase
+                    .from('users')
+                    .select('*')
+                    .eq('is_active', true);
+
+                if (error) throw error;
+
+                return data.map(user => ({
+                    id: user.id,
+                    firstName: user.first_name,
+                    lastName: user.last_name,
+                    email: user.email,
+                    phone: user.phone || '',
+                    address: user.address || '',
+                    city: user.city || '',
+                    postalCode: user.postal_code || '',
+                    country: user.country || 'México',
+                    dateRegistered: user.date_registered,
+                    isActive: user.is_active,
+                    orders: user.orders || [],
+                    wishlist: user.wishlist || [],
+                    preferences: user.preferences || {
+                        newsletter: false,
+                        notifications: true,
+                        currency: 'COP'
+                    }
+                }));
+            } catch (error) {
+                console.error('Error al obtener usuarios:', error);
+                return [];
+            }
+        }
+
         // ===== FUNCIONES DE FIREBASE =====
         
         // Función para registrar usuario en Firebase
@@ -3354,9 +3498,9 @@
         
         // Función para registrar nuevo usuario
         async function registerUser(userData) {
-            // Usar Firebase si está disponible y configurado
-            if (useFirebase && checkFirebase()) {
-                return await registerUserFirebase(userData);
+            // Usar Supabase si está disponible y configurado
+            if (useSupabase && checkSupabase()) {
+                return await registerUserSupabase(userData);
             }
             
             // Fallback a localStorage
@@ -3397,15 +3541,15 @@
         
         // Función para autenticar usuario
         async function authenticateUser(email, password) {
-            // Usar Firebase si está disponible y configurado
-            if (useFirebase && checkFirebase()) {
+            // Usar Supabase si está disponible y configurado
+            if (useSupabase && checkSupabase()) {
                 try {
-                    const user = await authenticateUserFirebase(email, password);
+                    const user = await authenticateUserSupabase(email, password);
                     currentUser = user;
                     saveCurrentUser(user);
                     return user;
                 } catch (error) {
-                    console.error('Error de autenticación Firebase:', error);
+                    console.error('Error de autenticación Supabase:', error);
                     return null;
                 }
             }
@@ -3704,33 +3848,29 @@
             devTools.style.display = isVisible ? 'none' : 'block';
         }
 
-        function toggleFirebaseConfig() {
-            const config = prompt(`🔥 Configuración de Firebase
+        function toggleSupabaseConfig() {
+            const config = prompt(`🐘 Configuración de Supabase (PostgreSQL)
 
-Reemplaza estos valores con los de tu proyecto Firebase:
+Reemplaza estos valores con los de tu proyecto Supabase:
 
-apiKey: "tu-api-key",
-authDomain: "tu-proyecto.firebaseapp.com", 
-projectId: "tu-proyecto-id",
-storageBucket: "tu-proyecto.appspot.com",
-messagingSenderId: "123456789",
-appId: "tu-app-id"
+url: 'https://tu-proyecto.supabase.co',
+anonKey: 'tu-anon-key'
 
-¿Quieres activar Firebase? (sí/no):`);
+¿Quieres activar Supabase? (sí/no):`);
 
             if (config && config.toLowerCase().includes('sí')) {
-                useFirebase = true;
-                updateFirebaseStatus();
-                alert('✅ Firebase activado!\n\nAhora necesitas:\n1. Crear proyecto en Firebase\n2. Reemplazar la configuración en el código\n3. Habilitar Authentication y Firestore');
+                useSupabase = true;
+                updateSupabaseStatus();
+                alert('✅ Supabase activado!\n\nAhora necesitas:\n1. Crear proyecto en Supabase.com\n2. Crear tabla "users" en SQL Editor\n3. Reemplazar la configuración en el código\n4. Habilitar Authentication');
             }
         }
 
-        function updateFirebaseStatus() {
-            const statusElement = document.getElementById('firebaseStatus');
-            if (useFirebase && checkFirebase()) {
+        function updateSupabaseStatus() {
+            const statusElement = document.getElementById('supabaseStatus');
+            if (useSupabase && checkSupabase()) {
                 statusElement.textContent = '✅ Configurado y funcionando';
                 statusElement.style.color = '#28a745';
-            } else if (useFirebase) {
+            } else if (useSupabase) {
                 statusElement.textContent = '⚠️ Activado pero no configurado';
                 statusElement.style.color = '#ffc107';
             } else {
