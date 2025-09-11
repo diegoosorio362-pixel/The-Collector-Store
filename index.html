@@ -8,6 +8,9 @@
     <!-- Supabase SDK -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
+        // Verificar que Supabase se cargó correctamente
+        console.log('🔍 Verificando Supabase SDK...');
+        console.log('window.supabase disponible:', !!window.supabase);
         // Configuración de Supabase
         const supabaseConfig = {
             // AQUÍ VA TU CONFIGURACIÓN DE SUPABASE
@@ -19,8 +22,13 @@
         // Inicializar Supabase
         let supabase = null;
         if (supabaseConfig.url !== 'https://tu-proyecto.supabase.co') {
-            supabase = supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey);
-            console.log('🐘 Supabase inicializado correctamente');
+            try {
+                supabase = window.supabase.createClient(supabaseConfig.url, supabaseConfig.anonKey);
+                console.log('🐘 Supabase inicializado correctamente');
+            } catch (error) {
+                console.error('❌ Error al inicializar Supabase:', error);
+                supabase = null;
+            }
         } else {
             console.log('⚠️ Supabase no configurado - usando localStorage');
         }
