@@ -2805,6 +2805,9 @@
             }).format(copPrice);
         }
         
+        // Configuración de Supabase (debe estar al inicio)
+        let useSupabase = false; // Cambiar a true cuando configures Supabase
+        
         document.addEventListener('DOMContentLoaded', function() { 
             // Inicializar cache de elementos DOM
             initDOMCache();
@@ -3602,9 +3605,6 @@
 
         // ===== SISTEMA DE USUARIOS Y CUENTAS =====
         
-        // Configuración de Supabase
-        let useSupabase = false; // Cambiar a true cuando configures Supabase
-        
         // Base de datos local de usuarios (fallback)
         let users = JSON.parse(localStorage.getItem('tienda_users')) || [];
         let currentUser = JSON.parse(localStorage.getItem('tienda_current_user')) || null;
@@ -3630,6 +3630,8 @@
             users.push(testUser);
             localStorage.setItem('tienda_users', JSON.stringify(users));
             console.log('🔍 Usuario de prueba creado:', testUser);
+        } else {
+            console.log('🔍 Usuarios existentes:', users);
         }
         
         // Función para verificar si Supabase está disponible
@@ -4061,10 +4063,22 @@
             // Fallback a localStorage
             console.log('🔍 Usando localStorage para autenticación...');
             console.log('🔍 Usuarios disponibles:', users.length);
+            console.log('🔍 Lista completa de usuarios:', users);
             console.log('🔍 Buscando usuario con email:', email);
+            console.log('🔍 Password recibido:', password);
+            
+            // Buscar usuario paso a paso
+            const userByEmail = users.find(u => u.email === email);
+            console.log('🔍 Usuario encontrado por email:', userByEmail);
+            
+            if (userByEmail) {
+                console.log('🔍 Password del usuario:', userByEmail.password);
+                console.log('🔍 Password coincide:', userByEmail.password === password);
+                console.log('🔍 Usuario activo:', userByEmail.isActive);
+            }
             
             const user = users.find(u => u.email === email && u.password === password && u.isActive);
-            console.log('🔍 Usuario encontrado:', user);
+            console.log('🔍 Usuario final encontrado:', user);
             
             if (user) {
                 currentUser = user;
@@ -4718,6 +4732,27 @@ anonKey: 'tu-anon-key'
         // Función para editar perfil
         function editProfile() {
             alert('✏️ Función de edición de perfil próximamente disponible');
+        }
+
+        // Función para crear usuario de prueba (solo para desarrollo)
+        function createTestUser() {
+            const testUser = {
+                id: Date.now(),
+                firstName: 'Test',
+                lastName: 'Usuario',
+                email: 'test@test.com',
+                password: '123456',
+                phone: '1234567890',
+                isActive: true,
+                dateRegistered: new Date().toISOString()
+            };
+            
+            // Limpiar usuarios existentes
+            users = [testUser];
+            localStorage.setItem('tienda_users', JSON.stringify(users));
+            
+            console.log('🔍 Usuario de prueba creado:', testUser);
+            alert('✅ Usuario de prueba creado:\n\nEmail: test@test.com\nPassword: 123456');
         }
     </script>
 </body>
