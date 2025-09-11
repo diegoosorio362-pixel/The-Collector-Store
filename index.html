@@ -1017,6 +1017,180 @@
             text-align: center;
             line-height: 1.5;
         }
+
+        /* Galería de imágenes del producto */
+        .product-gallery {
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .product-image-main {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .product-image-main:hover {
+            transform: scale(1.05);
+        }
+
+        .product-thumbnails {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            justify-content: center;
+        }
+
+        .product-thumbnail {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .product-thumbnail:hover,
+        .product-thumbnail.active {
+            border-color: #ff6b35;
+            transform: scale(1.1);
+        }
+
+        /* Modal de galería de producto */
+        .product-gallery-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1003;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .product-gallery-modal.active {
+            display: flex;
+        }
+
+        .gallery-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .gallery-header {
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .gallery-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .gallery-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .gallery-body {
+            padding: 2rem;
+        }
+
+        .gallery-main-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: contain;
+            border-radius: 12px;
+            margin-bottom: 1rem;
+        }
+
+        .gallery-thumbnails {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .gallery-thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .gallery-thumbnail:hover,
+        .gallery-thumbnail.active {
+            border-color: #ff6b35;
+            transform: scale(1.1);
+        }
+
+        .gallery-info {
+            text-align: center;
+            margin-top: 1.5rem;
+        }
+
+        .gallery-price {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #ff6b35;
+            margin-bottom: 0.5rem;
+        }
+
+        .gallery-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+        }
+
+        .gallery-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .btn-gallery-add {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gallery-add:hover {
+            background: linear-gradient(135deg, #f7931e, #ffd700);
+            transform: translateY(-2px);
+        }
         
         @keyframes slideInUp {
             from {
@@ -1172,7 +1346,7 @@
                         <div class="slide-content">
                             <div class="slide-image">
                                 <img src="Dragon Ball.png" alt="Goku Super Saiyan" class="slide-img">
-                            </div>
+            </div>
                             <div class="slide-info">
                                 <h3>Goku Super Saiyan</h3>
                                 <p>La figura más poderosa de la colección</p>
@@ -1181,14 +1355,14 @@
                                     <img src="capsula.jpg" alt="Cápsula" style="width: 16px; height: 16px; margin-right: 0.5rem; border-radius: 50%; vertical-align: middle;">
                                     Agregar al Carrito
                                 </button>
-                            </div>
-                        </div>
+            </div>
                     </div>
+                </div>
                     <div class="slide">
                         <div class="slide-content">
                             <div class="slide-image">
                                 <img src="esfera-dragon.png" alt="Esfera del Dragón" class="slide-img">
-                            </div>
+                    </div>
                             <div class="slide-info">
                                 <h3>Esfera del Dragón</h3>
                                 <p>Replica auténtica de 4 estrellas</p>
@@ -1197,14 +1371,14 @@
                                     <img src="capsula.jpg" alt="Cápsula" style="width: 16px; height: 16px; margin-right: 0.5rem; border-radius: 50%; vertical-align: middle;">
                                     Agregar al Carrito
                                 </button>
-                            </div>
-                        </div>
+                </div>
                     </div>
+                </div>
                     <div class="slide">
                         <div class="slide-content">
                             <div class="slide-image">
                                 <img src="capsula.jpg" alt="Vegeta" class="slide-img">
-                            </div>
+                    </div>
                             <div class="slide-info">
                                 <h3>Vegeta Prince</h3>
                                 <p>El Príncipe de los Saiyajin</p>
@@ -1213,10 +1387,10 @@
                                     <img src="capsula.jpg" alt="Cápsula" style="width: 16px; height: 16px; margin-right: 0.5rem; border-radius: 50%; vertical-align: middle;">
                                     Agregar al Carrito
                                 </button>
-                            </div>
-                        </div>
+                </div>
                     </div>
                 </div>
+                    </div>
                 <div class="slider-controls">
                     <button class="slider-btn prev" onclick="changeSlide(-1)">❮</button>
                     <button class="slider-btn next" onclick="changeSlide(1)">❯</button>
@@ -1343,7 +1517,7 @@
                 </form>
                 <div class="modal-divider">
                     <span>o</span>
-                </div>
+            </div>
                 <div class="social-login">
                     <button class="btn-social google" onclick="loginWithGoogle()">
                         <span>🔍</span> Continuar con Google
@@ -1435,6 +1609,32 @@
         </div>
     </div>
 
+    <!-- Modal de galería de producto -->
+    <div class="product-gallery-modal" id="productGalleryModal">
+        <div class="gallery-content">
+            <div class="gallery-header">
+                <h3 class="gallery-title" id="galleryTitle">Producto</h3>
+                <button class="gallery-close" onclick="closeProductGallery()">✕</button>
+            </div>
+            <div class="gallery-body">
+                <img id="galleryMainImage" src="" alt="Imagen principal" class="gallery-main-image">
+                <div class="gallery-thumbnails" id="galleryThumbnails">
+                    <!-- Thumbnails se generan dinámicamente -->
+                </div>
+                <div class="gallery-info">
+                    <div class="gallery-price" id="galleryPrice">Precio</div>
+                    <p class="gallery-description" id="galleryDescription">Descripción</p>
+                    <div class="gallery-actions">
+                        <button class="btn-gallery-add" id="galleryAddToCart" onclick="addToCartFromGallery()">
+                            <img src="capsula.jpg" alt="Cápsula" style="width: 16px; height: 16px; margin-right: 0.5rem; border-radius: 50%; vertical-align: middle;">
+                            Agregar al Carrito
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -1483,7 +1683,7 @@
 
         const products = [
             // WCF Custom - Productos reales del usuario
-            {id: 29, name: "Spopovich WCF Custom", description: "Figura WCF Custom de Spopovich - Pintura personalizada con detalles únicos. Incluye vista frontal y trasera.", price: 10.00, image: "Spopovich de frente.jpg", category: "wcf-custom"},
+            {id: 29, name: "Spopovich WCF Custom", description: "Figura WCF Custom de Spopovich - Pintura personalizada con detalles únicos. Incluye vista frontal y trasera.", price: 10.00, image: "Spopovich de frente.jpg", images: ["Spopovich de frente.jpg", "Spopovich de espalda.jpg"], category: "wcf-custom"},
             
             // WCF - World Collectable Figure
             {id: 1, name: "Goku Super Saiyan WCF", description: "Figura WCF de Goku en forma Super Saiyan - Edición limitada", price: 89.99, image: "Dragon Ball.jpg", category: "wcf"},
@@ -1730,9 +1930,26 @@
                     badge = '<div class="product-badge original">Original</div>';
                 }
                 
+                // Crear galería de imágenes si el producto tiene múltiples imágenes
+                let galleryHTML = '';
+                if (product.images && product.images.length > 1) {
+                    galleryHTML = `
+                        <div class="product-gallery">
+                            <img src="${product.images[0]}" alt="${product.name}" class="product-image-main" onclick="openProductGallery(${product.id})">
+                            <div class="product-thumbnails">
+                                ${product.images.map((img, index) => 
+                                    `<img src="${img}" alt="${product.name} ${index + 1}" class="product-thumbnail ${index === 0 ? 'active' : ''}" onclick="changeMainImage(this, '${product.images[0]}')">`
+                                ).join('')}
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    galleryHTML = `<img src="${product.image}" alt="${product.name}" class="product-image" onclick="openProductGallery(${product.id})">`;
+                }
+
                 productCard.innerHTML = `
                     ${badge}
-                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    ${galleryHTML}
                     <div class="product-info">
                         <h3 class="product-title">${product.name}</h3>
                         <p class="product-description">${product.description}</p>
@@ -2123,6 +2340,84 @@
         function showTerms() {
             alert('📋 Términos y Condiciones\n\nAquí irían los términos y condiciones de la tienda.\n\n(Función simulada)');
         }
+
+        // Funciones de galería de productos
+        let currentGalleryProduct = null;
+
+        function openProductGallery(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            currentGalleryProduct = product;
+            const modal = document.getElementById('productGalleryModal');
+            const title = document.getElementById('galleryTitle');
+            const mainImage = document.getElementById('galleryMainImage');
+            const price = document.getElementById('galleryPrice');
+            const description = document.getElementById('galleryDescription');
+            const thumbnails = document.getElementById('galleryThumbnails');
+
+            title.textContent = product.name;
+            price.textContent = formatPrice(product.price);
+            description.textContent = product.description;
+
+            // Configurar imágenes
+            const productImages = product.images || [product.image];
+            mainImage.src = productImages[0];
+
+            // Crear thumbnails
+            thumbnails.innerHTML = '';
+            productImages.forEach((img, index) => {
+                const thumbnail = document.createElement('img');
+                thumbnail.src = img;
+                thumbnail.alt = `${product.name} ${index + 1}`;
+                thumbnail.className = `gallery-thumbnail ${index === 0 ? 'active' : ''}`;
+                thumbnail.onclick = () => changeGalleryImage(img, thumbnail);
+                thumbnails.appendChild(thumbnail);
+            });
+
+            modal.classList.add('active');
+        }
+
+        function closeProductGallery() {
+            document.getElementById('productGalleryModal').classList.remove('active');
+            currentGalleryProduct = null;
+        }
+
+        function changeGalleryImage(imageSrc, thumbnail) {
+            const mainImage = document.getElementById('galleryMainImage');
+            const thumbnails = document.querySelectorAll('.gallery-thumbnail');
+            
+            mainImage.src = imageSrc;
+            
+            // Actualizar thumbnails activos
+            thumbnails.forEach(t => t.classList.remove('active'));
+            thumbnail.classList.add('active');
+        }
+
+        function changeMainImage(thumbnail, fallbackImage) {
+            const mainImage = thumbnail.closest('.product-gallery').querySelector('.product-image-main');
+            const thumbnails = thumbnail.parentElement.querySelectorAll('.product-thumbnail');
+            
+            mainImage.src = thumbnail.src;
+            
+            // Actualizar thumbnails activos
+            thumbnails.forEach(t => t.classList.remove('active'));
+            thumbnail.classList.add('active');
+        }
+
+        function addToCartFromGallery() {
+            if (currentGalleryProduct) {
+                addToCart(currentGalleryProduct.id);
+                closeProductGallery();
+            }
+        }
+
+        // Cerrar modal al hacer clic fuera
+        document.getElementById('productGalleryModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeProductGallery();
+            }
+        });
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
