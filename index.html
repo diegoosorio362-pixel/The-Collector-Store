@@ -433,9 +433,23 @@
             filter: brightness(1.05);
         }
         .product-info { padding: 1.5rem; position: relative; }
-        .product-badge { position: absolute; top: 10px; right: 10px; background: #ff6b35; color: white; padding: 0.3rem 0.8rem; border-radius: 15px; font-size: 0.8rem; font-weight: 600; }
-        .product-badge.new { background: #4CAF50; }
-        .product-badge.sale { background: #f44336; }
+        .product-badge { 
+            position: absolute; 
+            top: 10px; 
+            right: 10px; 
+            color: white; 
+            padding: 0.3rem 0.8rem; 
+            border-radius: 15px; 
+            font-size: 0.8rem; 
+            font-weight: 600; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .product-badge.wcf { background: linear-gradient(135deg, #2196F3, #1976D2); }
+        .product-badge.gashapon { background: linear-gradient(135deg, #FF9800, #F57C00); }
+        .product-badge.custom { background: linear-gradient(135deg, #9C27B0, #7B1FA2); }
+        .product-badge.replica { background: linear-gradient(135deg, #607D8B, #455A64); }
+        .product-badge.original { background: linear-gradient(135deg, #4CAF50, #388E3C); }
         .product-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; color: #333; }
         .product-description { color: #666; margin-bottom: 1rem; font-size: 0.9rem; }
         .product-price { font-size: 1.5rem; font-weight: 700; color: #ff6b35; margin-bottom: 1rem; }
@@ -1220,14 +1234,14 @@
         <div class="container">
             <h2 class="section-title">Todos los Productos</h2>
             
-            <!-- Filtros por personaje -->
+            <!-- Filtros por categoría de figuras -->
             <div class="filters-container">
                 <button class="filter-btn active" data-filter="all">Todos</button>
-                <button class="filter-btn" data-filter="goku">Goku</button>
-                <button class="filter-btn" data-filter="vegeta">Vegeta</button>
-                <button class="filter-btn" data-filter="piccolo">Piccolo</button>
-                <button class="filter-btn" data-filter="esferas">Esferas</button>
-                <button class="filter-btn" data-filter="accesorios">Accesorios</button>
+                <button class="filter-btn" data-filter="wcf">WCF</button>
+                <button class="filter-btn" data-filter="gashapon">Gashapon</button>
+                <button class="filter-btn" data-filter="wcf-custom">WCF Custom</button>
+                <button class="filter-btn" data-filter="replicas">Réplicas</button>
+                <button class="filter-btn" data-filter="originales">Originales</button>
             </div>
             
             <!-- Búsqueda -->
@@ -1236,64 +1250,7 @@
             </div>
             
             <div class="products-grid" id="productsGrid">
-                <div class="product-card" data-category="goku">
-                    <div class="product-badge new">Nuevo</div>
-                    <img src="capsula.jpg" alt="Figura Goku" class="product-image">
-                    <div class="product-info">
-                        <h3 class="product-title">Figura Goku Super Saiyan</h3>
-                        <p class="product-description">Figura de colección de Goku en modo Super Saiyan, perfecta para fanáticos.</p>
-                        <div class="product-price">$89.99</div>
-                        <button class="add-to-cart">Agregar al Carrito</button>
-                    </div>
-                </div>
-                <div class="product-card" data-category="esferas">
-                    <div class="product-badge sale">Oferta</div>
-                    <img src="esfera-dragon.png" alt="Esfera del Dragón" class="product-image">
-                    <div class="product-info">
-                        <h3 class="product-title">Esfera del Dragón</h3>
-                        <p class="product-description">Replica auténtica de la Esfera del Dragón de 4 estrellas.</p>
-                        <div class="product-price">$45.99</div>
-                        <button class="add-to-cart">Agregar al Carrito</button>
-                    </div>
-                </div>
-                <div class="product-card" data-category="vegeta">
-                    <img src="capsula.jpg" alt="Figura Vegeta" class="product-image">
-                    <div class="product-info">
-                        <h3 class="product-title">Figura Vegeta</h3>
-                        <p class="product-description">Figura de colección del Príncipe de los Saiyajin.</p>
-                        <div class="product-price">$79.99</div>
-                        <button class="add-to-cart">Agregar al Carrito</button>
-                    </div>
-                </div>
-                <div class="product-card" data-category="piccolo">
-                    <div class="product-badge new">Nuevo</div>
-                    <img src="capsula.jpg" alt="Figura Piccolo" class="product-image">
-                    <div class="product-info">
-                        <h3 class="product-title">Figura Piccolo</h3>
-                        <p class="product-description">Figura de colección del Namekusei Piccolo.</p>
-                        <div class="product-price">$69.99</div>
-                        <button class="add-to-cart">Agregar al Carrito</button>
-                    </div>
-                </div>
-                <div class="product-card" data-category="accesorios">
-                    <img src="esfera-dragon.png" alt="Set Esferas" class="product-image">
-                    <div class="product-info">
-                        <h3 class="product-title">Set 7 Esferas del Dragón</h3>
-                        <p class="product-description">Colección completa de las 7 Esferas del Dragón.</p>
-                        <div class="product-price">$199.99</div>
-                        <button class="add-to-cart">Agregar al Carrito</button>
-                    </div>
-                </div>
-                <div class="product-card" data-category="goku">
-                    <div class="product-badge sale">Oferta</div>
-                    <img src="capsula.jpg" alt="Goku SSJ3" class="product-image">
-                    <div class="product-info">
-                        <h3 class="product-title">Goku Super Saiyan 3</h3>
-                        <p class="product-description">Figura épica de Goku en su transformación más poderosa.</p>
-                        <div class="product-price">$129.99</div>
-                        <button class="add-to-cart">Agregar al Carrito</button>
-                    </div>
-                </div>
+                <!-- Los productos se cargarán dinámicamente desde JavaScript -->
             </div>
         </div>
     </section>
@@ -1302,25 +1259,30 @@
         <div class="container">
             <h2 class="section-title">Categorías</h2>
             <div class="categories-grid">
-                <div class="category-card" onclick="filterProducts('figuras')">
-                    <div class="category-icon">🥷</div>
-                    <h3>Figuras de Acción</h3>
-                    <p>Figuras articuladas de todos los personajes</p>
+                <div class="category-card" onclick="filterProducts('wcf')">
+                    <div class="category-icon">🎯</div>
+                    <h3>WCF</h3>
+                    <p>World Collectable Figure - Figuras pequeñas de alta calidad</p>
                 </div>
-                <div class="category-card" onclick="filterProducts('estatuas')">
-                    <div class="category-icon">🏆</div>
-                    <h3>Estatuas Premium</h3>
-                    <p>Estatuas de alta calidad y detalle</p>
+                <div class="category-card" onclick="filterProducts('gashapon')">
+                    <div class="category-icon">🎰</div>
+                    <h3>Gashapon</h3>
+                    <p>Figuras de cápsula con sorpresa y detalles únicos</p>
                 </div>
-                <div class="category-card" onclick="filterProducts('accesorios')">
-                    <div class="category-icon">💎</div>
-                    <h3>Accesorios</h3>
-                    <p>Esferas del dragón, cápsulas y más</p>
+                <div class="category-card" onclick="filterProducts('wcf-custom')">
+                    <div class="category-icon">🎨</div>
+                    <h3>WCF Custom</h3>
+                    <p>Figuras WCF personalizadas y pintadas a mano</p>
                 </div>
-                <div class="category-card" onclick="filterProducts('ropa')">
-                    <div class="category-icon">👕</div>
-                    <h3>Ropa y Merchandising</h3>
-                    <p>Camisetas, gorras y artículos coleccionables</p>
+                <div class="category-card" onclick="filterProducts('replicas')">
+                    <div class="category-icon">🔮</div>
+                    <h3>Réplicas</h3>
+                    <p>Réplicas auténticas de objetos del anime</p>
+                </div>
+                <div class="category-card" onclick="filterProducts('originales')">
+                    <div class="category-icon">⭐</div>
+                    <h3>Originales</h3>
+                    <p>Productos oficiales de Bandai y Toei Animation</p>
                 </div>
             </div>
         </div>
@@ -1520,12 +1482,43 @@
         };
 
         const products = [
-            {id: 1, name: "Goku Super Saiyan", description: "Figura de acción articulada de Goku en forma Super Saiyan", price: 89.99, image: "Dragon Ball.jpg", category: "figuras"},
-            {id: 2, name: "Vegeta Prince", description: "Figura premium de Vegeta con detalles únicos", price: 129.99, image: "Dragon Ball.png", category: "estatuas"},
-            {id: 3, name: "Esfera del Dragón", description: "Esfera del dragón de 7 estrellas coleccionable", price: 29.99, image: "esfera-dragon.png", category: "accesorios"},
-            {id: 4, name: "Cápsula Hoi-Poi", description: "Cápsula Hoi-Poi funcional con luz LED", price: 19.99, image: "capsula.jpg", category: "accesorios"},
-            {id: 5, name: "Piccolo Namekiano", description: "Figura articulada de Piccolo con capa", price: 79.99, image: "Dragon Ball.jpg", category: "figuras"},
-            {id: 6, name: "Freezer Final Form", description: "Estatua premium de Freezer en su forma final", price: 159.99, image: "Dragon Ball.png", category: "estatuas"}
+            // WCF - World Collectable Figure
+            {id: 1, name: "Goku Super Saiyan WCF", description: "Figura WCF de Goku en forma Super Saiyan - Edición limitada", price: 89.99, image: "Dragon Ball.jpg", category: "wcf"},
+            {id: 7, name: "Goku SSJ3 WCF", description: "Figura WCF de Goku Super Saiyan 3 - Colección especial", price: 95.99, image: "capsula.jpg", category: "wcf"},
+            {id: 11, name: "Vegeta SSJ2 WCF", description: "Figura WCF de Vegeta Super Saiyan 2 con aura dorada", price: 87.99, image: "Dragon Ball.png", category: "wcf"},
+            {id: 12, name: "Gohan SSJ2 WCF", description: "Figura WCF de Gohan Super Saiyan 2 vs Cell", price: 92.99, image: "esfera-dragon.png", category: "wcf"},
+            {id: 13, name: "Trunks WCF", description: "Figura WCF de Trunks del Futuro con espada", price: 84.99, image: "capsula.jpg", category: "wcf"},
+            {id: 14, name: "Goten WCF", description: "Figura WCF de Goten en su primera transformación", price: 78.99, image: "Dragon Ball.jpg", category: "wcf"},
+            
+            // Gashapon
+            {id: 2, name: "Vegeta Prince Gashapon", description: "Figura Gashapon de Vegeta con detalles únicos y pintura especial", price: 129.99, image: "Dragon Ball.png", category: "gashapon"},
+            {id: 6, name: "Freezer Final Form Gashapon", description: "Gashapon premium de Freezer en su forma final", price: 159.99, image: "Dragon Ball.png", category: "gashapon"},
+            {id: 15, name: "Cell Perfecto Gashapon", description: "Figura Gashapon de Cell en su forma perfecta", price: 145.99, image: "esfera-dragon.png", category: "gashapon"},
+            {id: 16, name: "Majin Buu Gashapon", description: "Gashapon de Majin Buu con efectos especiales", price: 138.99, image: "capsula.jpg", category: "gashapon"},
+            {id: 17, name: "Goku Ultra Instinct Gashapon", description: "Figura Gashapon de Goku Ultra Instinct - Edición especial", price: 175.99, image: "Dragon Ball.jpg", category: "gashapon"},
+            
+            // WCF Custom
+            {id: 5, name: "Piccolo WCF Custom", description: "Figura WCF Custom de Piccolo con capa personalizada", price: 79.99, image: "Dragon Ball.jpg", category: "wcf-custom"},
+            {id: 9, name: "Broly WCF Custom", description: "WCF Custom de Broly con efectos especiales", price: 110.99, image: "Dragon Ball.jpg", category: "wcf-custom"},
+            {id: 18, name: "Goku SSJ4 WCF Custom", description: "WCF Custom de Goku Super Saiyan 4 con pintura metálica", price: 125.99, image: "Dragon Ball.png", category: "wcf-custom"},
+            {id: 19, name: "Vegeta SSJ4 WCF Custom", description: "Figura WCF Custom de Vegeta SSJ4 con detalles dorados", price: 120.99, image: "esfera-dragon.png", category: "wcf-custom"},
+            {id: 20, name: "Gogeta WCF Custom", description: "WCF Custom de Gogeta con aura fusionada personalizada", price: 135.99, image: "capsula.jpg", category: "wcf-custom"},
+            
+            // Réplicas
+            {id: 3, name: "Esfera del Dragón Réplica", description: "Réplica auténtica de la Esfera del Dragón de 7 estrellas", price: 29.99, image: "esfera-dragon.png", category: "replicas"},
+            {id: 8, name: "Vegeta SSJ4 Réplica", description: "Réplica detallada de Vegeta Super Saiyan 4", price: 75.99, image: "esfera-dragon.png", category: "replicas"},
+            {id: 21, name: "Dragon Ball Z Réplica", description: "Set completo de 7 Esferas del Dragón Z con base", price: 45.99, image: "Dragon Ball.jpg", category: "replicas"},
+            {id: 22, name: "Cápsula Espacial Réplica", description: "Réplica de cápsula espacial de Vegeta con luces LED", price: 55.99, image: "capsula.jpg", category: "replicas"},
+            {id: 23, name: "Espada de Trunks Réplica", description: "Réplica de la espada de Trunks con funda", price: 65.99, image: "Dragon Ball.png", category: "replicas"},
+            {id: 24, name: "Guantelete de Freezer Réplica", description: "Réplica del guantelete de Freezer con detalles metálicos", price: 85.99, image: "esfera-dragon.png", category: "replicas"},
+            
+            // Originales
+            {id: 4, name: "Cápsula Hoi-Poi Original", description: "Cápsula Hoi-Poi original de Bandai con luz LED funcional", price: 19.99, image: "capsula.jpg", category: "originales"},
+            {id: 10, name: "Gohan Ultimate Original", description: "Figura original de Gohan Ultimate - Edición exclusiva", price: 85.99, image: "Dragon Ball.png", category: "originales"},
+            {id: 25, name: "Goku Super Saiyan God Original", description: "Figura original de Goku Super Saiyan God - Bandai", price: 95.99, image: "Dragon Ball.jpg", category: "originales"},
+            {id: 26, name: "Vegeta Super Saiyan Blue Original", description: "Figura original de Vegeta SSB - Toei Animation", price: 98.99, image: "capsula.jpg", category: "originales"},
+            {id: 27, name: "Beerus Original", description: "Figura original de Beerus - Edición limitada Bandai", price: 110.99, image: "Dragon Ball.png", category: "originales"},
+            {id: 28, name: "Whis Original", description: "Figura original de Whis con bastón - Colección oficial", price: 105.99, image: "esfera-dragon.png", category: "originales"}
         ];
         let cart = [];
         let currentFilter = 'all';
@@ -1714,10 +1707,39 @@
             const productsGrid = document.getElementById('productsGrid');
             productsGrid.innerHTML = '';
             const filteredProducts = currentFilter === 'all' ? products : products.filter(product => product.category === currentFilter);
+            
             filteredProducts.forEach(product => {
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
-                productCard.innerHTML = `<img src="${product.image}" alt="${product.name}" class="product-image"><div class="product-info"><h3 class="product-title">${product.name}</h3><p class="product-description">${product.description}</p><div class="product-price">${formatPrice(product.price)}</div><button class="add-to-cart" onclick="addToCart(${product.id})"><img src="capsula.jpg" alt="Cápsula" style="width: 16px; height: 16px; margin-right: 0.5rem; border-radius: 50%; vertical-align: middle;">Agregar al Carrito</button></div></div>`;
+                productCard.setAttribute('data-category', product.category);
+                
+                // Determinar badge según la categoría
+                let badge = '';
+                if (product.category === 'wcf') {
+                    badge = '<div class="product-badge wcf">WCF</div>';
+                } else if (product.category === 'gashapon') {
+                    badge = '<div class="product-badge gashapon">Gashapon</div>';
+                } else if (product.category === 'wcf-custom') {
+                    badge = '<div class="product-badge custom">Custom</div>';
+                } else if (product.category === 'replicas') {
+                    badge = '<div class="product-badge replica">Réplica</div>';
+                } else if (product.category === 'originales') {
+                    badge = '<div class="product-badge original">Original</div>';
+                }
+                
+                productCard.innerHTML = `
+                    ${badge}
+                    <img src="${product.image}" alt="${product.name}" class="product-image">
+                    <div class="product-info">
+                        <h3 class="product-title">${product.name}</h3>
+                        <p class="product-description">${product.description}</p>
+                        <div class="product-price">${formatPrice(product.price)}</div>
+                        <button class="add-to-cart" onclick="addToCart(${product.id})">
+                            <img src="capsula.jpg" alt="Cápsula" style="width: 16px; height: 16px; margin-right: 0.5rem; border-radius: 50%; vertical-align: middle;">
+                            Agregar al Carrito
+                        </button>
+                    </div>
+                `;
                 productsGrid.appendChild(productCard);
             });
         }
