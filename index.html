@@ -379,8 +379,60 @@
         .section-title { font-size: 2.5rem; text-align: center; margin-bottom: 3rem; color: #333; position: relative; }
         .section-title::after { content: ''; position: absolute; bottom: -10px; left: 50%; transform: translateX(-50%); width: 80px; height: 4px; background: linear-gradient(90deg, #ff6b35, #f7931e); border-radius: 2px; }
         .filters-container { display: flex; justify-content: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap; }
-        .filter-btn { background: white; border: 2px solid #ff6b35; color: #ff6b35; padding: 0.5rem 1.5rem; border-radius: 25px; cursor: pointer; font-weight: 600; transition: all 0.3s; }
-        .filter-btn:hover, .filter-btn.active { background: #ff6b35; color: white; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3); }
+        .filter-btn { 
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef); 
+            border: 2px solid #e9ecef; 
+            color: #666; 
+            padding: 0.75rem 1.5rem; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            font-weight: 600; 
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .filter-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            transition: left 0.3s ease;
+            z-index: -1;
+        }
+        .filter-btn:hover::before {
+            left: 0;
+        }
+        .filter-btn:hover { 
+            color: white; 
+            border-color: #ff6b35; 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3); 
+        }
+        .filter-btn.active { 
+            background: linear-gradient(135deg, #ff6b35, #f7931e); 
+            color: white; 
+            border-color: #ff6b35; 
+            transform: translateY(-2px); 
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3); 
+        }
+        .filter-count {
+            background: rgba(255, 255, 255, 0.2);
+            color: inherit;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-left: 0.5rem;
+            min-width: 20px;
+            text-align: center;
+            display: inline-block;
+        }
+        .filter-btn.active .filter-count {
+            background: rgba(255, 255, 255, 0.3);
+        }
         .search-container { display: flex; justify-content: center; margin-bottom: 2rem; }
         .search-input { padding: 0.8rem 1.5rem; border: 2px solid #e0e0e0; border-radius: 25px; width: 300px; font-size: 1rem; outline: none; transition: all 0.3s; }
         .search-input:focus { border-color: #ff6b35; box-shadow: 0 0 10px rgba(255, 107, 53, 0.2); }
@@ -450,7 +502,7 @@
         .product-badge.custom { background: linear-gradient(135deg, #9C27B0, #7B1FA2); }
         .product-badge.replica { background: linear-gradient(135deg, #607D8B, #455A64); }
         .product-badge.original { background: linear-gradient(135deg, #4CAF50, #388E3C); }
-        .product-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; color: #333; }
+        .product-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; color: #333; text-align: center; }
         .product-description { color: #666; margin-bottom: 1rem; font-size: 0.9rem; }
         .product-price { font-size: 1.5rem; font-weight: 700; color: #ff6b35; margin-bottom: 1rem; }
         .add-to-cart { 
@@ -1486,12 +1538,24 @@
             
             <!-- Filtros por categoría de figuras -->
             <div class="filters-container">
-                <button class="filter-btn active" data-filter="all">Todos</button>
-                <button class="filter-btn" data-filter="wcf">WCF</button>
-                <button class="filter-btn" data-filter="gashapon">Gashapon</button>
-                <button class="filter-btn" data-filter="wcf-custom">WCF Custom</button>
-                <button class="filter-btn" data-filter="replicas">Réplicas</button>
-                <button class="filter-btn" data-filter="originales">Originales</button>
+                <button class="filter-btn active" data-filter="all">
+                    Todos <span class="filter-count" id="count-all">0</span>
+                </button>
+                <button class="filter-btn" data-filter="wcf">
+                    WCF <span class="filter-count" id="count-wcf">0</span>
+                </button>
+                <button class="filter-btn" data-filter="gashapon">
+                    Gashapon <span class="filter-count" id="count-gashapon">0</span>
+                </button>
+                <button class="filter-btn" data-filter="wcf-custom">
+                    WCF Custom <span class="filter-count" id="count-wcf-custom">0</span>
+                </button>
+                <button class="filter-btn" data-filter="replicas">
+                    Réplicas <span class="filter-count" id="count-replicas">0</span>
+                </button>
+                <button class="filter-btn" data-filter="originales">
+                    Originales <span class="filter-count" id="count-originales">0</span>
+                </button>
             </div>
             
             <!-- Búsqueda -->
@@ -1865,6 +1929,7 @@
             initDOMCache();
             
             loadProducts(); 
+            updateFilterCounts(); // Actualizar contadores de filtros
             initFilters();
             initSlider();
             initScrollAnimations();
@@ -2087,14 +2152,50 @@
         }
         
         function filterProducts(category) {
-            const products = document.querySelectorAll('.product-card');
+            currentFilter = category;
+            loadProducts();
+            updateFilterCounts();
             
-            products.forEach(product => {
-                if (category === 'all' || product.getAttribute('data-category') === category) {
-                    product.style.display = 'block';
-                    product.style.animation = 'fadeIn 0.5s ease';
-                } else {
-                    product.style.display = 'none';
+            // Actualizar botones de filtro
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-filter') === category) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Actualizar tarjetas de categoría
+            document.querySelectorAll('.category-card').forEach(card => {
+                card.style.borderColor = 'transparent';
+                card.style.transform = 'scale(1)';
+                card.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+            });
+            
+            // Resaltar la categoría seleccionada
+            const selectedCard = document.querySelector(`[onclick="filterProducts('${category}')"]`);
+            if (selectedCard) {
+                selectedCard.style.borderColor = '#ff6b35';
+                selectedCard.style.transform = 'scale(1.05)';
+                selectedCard.style.boxShadow = '0 8px 16px rgba(255, 107, 53, 0.3)';
+            }
+        }
+
+        function updateFilterCounts() {
+            // Contar productos por categoría
+            const counts = {
+                'all': products.length,
+                'wcf': products.filter(p => p.category === 'wcf').length,
+                'gashapon': products.filter(p => p.category === 'gashapon').length,
+                'wcf-custom': products.filter(p => p.category === 'wcf-custom').length,
+                'replicas': products.filter(p => p.category === 'replicas').length,
+                'originales': products.filter(p => p.category === 'originales').length
+            };
+
+            // Actualizar contadores
+            Object.keys(counts).forEach(category => {
+                const countElement = document.getElementById(`count-${category}`);
+                if (countElement) {
+                    countElement.textContent = counts[category];
                 }
             });
         }
@@ -2301,12 +2402,6 @@
             }, 2000);
         }
         function toggleLogin() { document.getElementById('loginModal').classList.toggle('active'); }
-        function filterProducts(category) {
-            currentFilter = category;
-            loadProducts();
-            document.querySelectorAll('.category-card').forEach(card => { card.style.borderColor = 'transparent'; });
-            if (category !== 'all') { event.currentTarget.style.borderColor = '#ff6b35'; }
-        }
         function scrollToSection(sectionId) {
             const section = document.getElementById(sectionId);
             if (section) { section.scrollIntoView({ behavior: 'smooth' }); }
