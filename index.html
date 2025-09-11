@@ -3267,36 +3267,44 @@
 
                 if (authError) throw authError;
 
-                // Esperar un momento para que se complete el registro
-                await new Promise(resolve => setTimeout(resolve, 1000));
+                // Esperar más tiempo para que se complete el registro en auth.users
+                await new Promise(resolve => setTimeout(resolve, 3000));
 
-                // Crear perfil en la tabla users usando el service role
-                const { data: profileData, error: profileError } = await window.supabase
-                    .from('users')
-                    .insert([
-                        {
-                            id: authData.user.id,
-                            first_name: userData.firstName,
-                            last_name: userData.lastName,
-                            email: userData.email,
-                            phone: userData.phone || '',
-                            address: userData.address || '',
-                            city: userData.city || '',
-                            country: userData.country || 'México',
-                            date_registered: new Date().toISOString(),
-                            is_active: true,
-                            preferences: {
-                                newsletter: false,
-                                notifications: true,
-                                currency: 'COP'
+                // Verificar que el usuario existe en auth.users antes de crear el perfil
+                const { data: { user: authUser }, error: authCheckError } = await window.supabase.auth.getUser();
+                
+                if (authCheckError || !authUser) {
+                    console.log('⚠️ Usuario no encontrado en auth.users, saltando creación de perfil');
+                    // Continuar sin crear perfil
+                } else {
+                    // Crear perfil en la tabla users
+                    const { data: profileData, error: profileError } = await window.supabase
+                        .from('users')
+                        .insert([
+                            {
+                                id: authData.user.id,
+                                first_name: userData.firstName,
+                                last_name: userData.lastName,
+                                email: userData.email,
+                                phone: userData.phone || '',
+                                address: userData.address || '',
+                                city: userData.city || '',
+                                country: userData.country || 'México',
+                                date_registered: new Date().toISOString(),
+                                is_active: true,
+                                preferences: {
+                                    newsletter: false,
+                                    notifications: true,
+                                    currency: 'COP'
+                                }
                             }
-                        }
-                    ])
-                    .select();
+                        ])
+                        .select();
 
-                if (profileError) {
-                    console.log('⚠️ Error al crear perfil, pero usuario creado en Auth:', profileError);
-                    // Continuar aunque falle la creación del perfil
+                    if (profileError) {
+                        console.log('⚠️ Error al crear perfil, pero usuario creado en Auth:', profileError);
+                        // Continuar aunque falle la creación del perfil
+                    }
                 }
 
                 return {
