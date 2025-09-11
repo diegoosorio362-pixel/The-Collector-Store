@@ -1086,6 +1086,8 @@
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
         }
 
         .gallery-header {
@@ -1120,6 +1122,9 @@
 
         .gallery-body {
             padding: 2rem;
+            overflow-y: auto;
+            flex: 1;
+            max-height: calc(90vh - 120px);
         }
 
         .gallery-main-image {
@@ -1190,6 +1195,77 @@
         .btn-gallery-add:hover {
             background: linear-gradient(135deg, #f7931e, #ffd700);
             transform: translateY(-2px);
+        }
+
+        /* Características del producto */
+        .gallery-characteristics {
+            margin: 1.5rem 0;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border-radius: 12px;
+            border-left: 4px solid #ff6b35;
+        }
+
+        .characteristics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .characteristic-item {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .characteristic-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        }
+
+        .characteristic-icon {
+            font-size: 1.2rem;
+            margin-right: 0.75rem;
+            min-width: 24px;
+        }
+
+        .characteristic-content {
+            flex: 1;
+        }
+
+        .characteristic-label {
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .characteristic-value {
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        /* Scroll personalizado para el modal */
+        .gallery-body::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .gallery-body::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .gallery-body::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            border-radius: 4px;
+        }
+
+        .gallery-body::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #f7931e, #ffd700);
         }
         
         @keyframes slideInUp {
@@ -1624,6 +1700,15 @@
                 <div class="gallery-info">
                     <div class="gallery-price" id="galleryPrice">Precio</div>
                     <p class="gallery-description" id="galleryDescription">Descripción</p>
+                    
+                    <!-- Características detalladas -->
+                    <div class="gallery-characteristics" id="galleryCharacteristics" style="display: none;">
+                        <h4 style="color: #ff6b35; margin-bottom: 1rem; font-size: 1.2rem;">📋 Características del Producto</h4>
+                        <div class="characteristics-grid" id="characteristicsGrid">
+                            <!-- Se llena dinámicamente -->
+                        </div>
+                    </div>
+                    
                     <div class="gallery-actions">
                         <button class="btn-gallery-add" id="galleryAddToCart" onclick="addToCartFromGallery()">
                             <img src="capsula.jpg" alt="Cápsula" style="width: 16px; height: 16px; margin-right: 0.5rem; border-radius: 50%; vertical-align: middle;">
@@ -1683,7 +1768,17 @@
 
         const products = [
             // WCF Custom - Productos reales del usuario
-            {id: 29, name: "Spopovich WCF Custom", description: "Figura WCF Custom de Spopovich - Pintura personalizada con detalles únicos. Incluye vista frontal y trasera.", price: 10.00, image: "Spopovich de frente.jpg", images: ["Spopovich de frente.jpg", "Spopovich de espalda.jpg"], category: "wcf-custom"},
+            {id: 29, name: "Spopovich WCF Custom", description: "Figura WCF Custom de Spopovich - Pintura personalizada con detalles únicos. Incluye vista frontal y trasera.", price: 10.00, image: "Spopovich de frente.jpg", images: ["Spopovich de frente.jpg", "Spopovich de espalda.jpg"], category: "wcf-custom", 
+             characteristics: {
+                 material: "PVC de alta calidad",
+                 altura: "8-10 cm",
+                 pintura: "Pintura personalizada a mano",
+                 detalles: "Detalles únicos en ropa y expresión",
+                 base: "Base transparente incluida",
+                 edicion: "Edición limitada - Solo 50 unidades",
+                 estado: "Nuevo en caja original",
+                 garantia: "Garantía de 30 días"
+             }},
             
             // WCF - World Collectable Figure
             {id: 1, name: "Goku Super Saiyan WCF", description: "Figura WCF de Goku en forma Super Saiyan - Edición limitada", price: 89.99, image: "Dragon Ball.jpg", category: "wcf"},
@@ -2355,6 +2450,8 @@
             const price = document.getElementById('galleryPrice');
             const description = document.getElementById('galleryDescription');
             const thumbnails = document.getElementById('galleryThumbnails');
+            const characteristics = document.getElementById('galleryCharacteristics');
+            const characteristicsGrid = document.getElementById('characteristicsGrid');
 
             title.textContent = product.name;
             price.textContent = formatPrice(product.price);
@@ -2374,6 +2471,49 @@
                 thumbnail.onclick = () => changeGalleryImage(img, thumbnail);
                 thumbnails.appendChild(thumbnail);
             });
+
+            // Mostrar características si existen
+            if (product.characteristics) {
+                characteristics.style.display = 'block';
+                characteristicsGrid.innerHTML = '';
+                
+                const characteristicLabels = {
+                    material: 'Material',
+                    altura: 'Altura',
+                    pintura: 'Pintura',
+                    detalles: 'Detalles',
+                    base: 'Base',
+                    edicion: 'Edición',
+                    estado: 'Estado',
+                    garantia: 'Garantía'
+                };
+
+                const characteristicIcons = {
+                    material: '🧱',
+                    altura: '📏',
+                    pintura: '🎨',
+                    detalles: '✨',
+                    base: '🔲',
+                    edicion: '🏷️',
+                    estado: '📦',
+                    garantia: '🛡️'
+                };
+
+                Object.entries(product.characteristics).forEach(([key, value]) => {
+                    const item = document.createElement('div');
+                    item.className = 'characteristic-item';
+                    item.innerHTML = `
+                        <div class="characteristic-icon">${characteristicIcons[key] || '📋'}</div>
+                        <div class="characteristic-content">
+                            <div class="characteristic-label">${characteristicLabels[key] || key}</div>
+                            <div class="characteristic-value">${value}</div>
+                        </div>
+                    `;
+                    characteristicsGrid.appendChild(item);
+                });
+            } else {
+                characteristics.style.display = 'none';
+            }
 
             modal.classList.add('active');
         }
