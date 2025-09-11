@@ -983,6 +983,26 @@
             background: white;
             box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
         }
+        
+        .password-help {
+            display: block;
+            margin-top: 5px;
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+            background: #f8f9fa;
+            padding: 8px;
+            border-radius: 4px;
+            border-left: 3px solid #007bff;
+        }
+        
+        .form-group input:invalid {
+            border-color: #dc3545;
+        }
+        
+        .form-group input:valid {
+            border-color: #28a745;
+        }
         .form-options {
             display: flex;
             justify-content: space-between;
@@ -2066,7 +2086,17 @@
                     </div>
                     <div class="form-group">
                         <label for="regPassword">🔒 Contraseña</label>
-                        <input type="password" id="regPassword" required placeholder="••••••••">
+                        <input type="password" id="regPassword" required placeholder="••••••••"
+                               pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':\"|<>?,./^`~]).{8,}$"
+                               title="La contraseña debe tener al menos 8 caracteres, incluyendo: una letra minúscula, una mayúscula, un número y un símbolo especial">
+                        <small class="password-help">
+                            <strong>Requisitos de contraseña:</strong><br>
+                            • Al menos 8 caracteres<br>
+                            • Una letra minúscula (a-z)<br>
+                            • Una letra mayúscula (A-Z)<br>
+                            • Un número (0-9)<br>
+                            • Un símbolo especial (!@#$%^&*()_+-=[]{};':"|<>?,./^`~)
+                        </small>
                     </div>
                     <div class="form-group">
                         <label for="regConfirmPassword">🔒 Confirmar Contraseña</label>
@@ -3265,7 +3295,16 @@
                     }
                 });
 
-                if (authError) throw authError;
+                if (authError) {
+                    // Manejar errores específicos de Supabase
+                    if (authError.message.includes('Password should contain')) {
+                        throw new Error('La contraseña debe contener al menos 8 caracteres, incluyendo: una letra minúscula, una mayúscula, un número y un símbolo especial.');
+                    } else if (authError.message.includes('User already registered')) {
+                        throw new Error('Este email ya está registrado. Por favor, usa otro email o intenta hacer login.');
+                    } else {
+                        throw new Error('Error al registrar usuario: ' + authError.message);
+                    }
+                }
 
                 // Esperar más tiempo para que se complete el registro en auth.users
                 await new Promise(resolve => setTimeout(resolve, 3000));
