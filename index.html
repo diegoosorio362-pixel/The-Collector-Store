@@ -2805,8 +2805,10 @@
             }).format(copPrice);
         }
         
-        // Configuración de Supabase (debe estar al inicio)
-        let useSupabase = false; // Cambiar a true cuando configures Supabase
+        // Sistema de usuarios con Node.js backend
+        const API_BASE_URL = 'http://localhost:3000/api';
+        let currentUser = null;
+        let authToken = null;
         
         document.addEventListener('DOMContentLoaded', function() { 
             // Inicializar cache de elementos DOM
@@ -2827,8 +2829,8 @@
                 updateUIForGuest();
             }
             
-            // Inicializar estado de Supabase
-            updateSupabaseStatus();
+            // Inicializar sistema de usuarios
+            console.log('🔍 Sistema de usuarios inicializado');
             
             // Agregar validación en tiempo real para contraseña
             const passwordInput = document.getElementById('regPassword');
@@ -3315,25 +3317,15 @@
             const password = document.getElementById('password').value;
             const rememberMe = document.getElementById('rememberMe').checked;
             
-            // 🔍 LOGS DE DEPURACIÓN
-            console.log('🔍 DEBUG LOGIN:');
-            console.log('Email:', email);
-            console.log('Password:', password);
-            console.log('Remember Me:', rememberMe);
-            
             if (!email || !password) {
                 alert('❌ Por favor completa todos los campos');
                 return;
             }
             
-            // LOGIN SIMPLIFICADO - Buscar directamente en localStorage
-            console.log('🔍 Buscando usuario directamente...');
-            const user = users.find(u => u.email === email && u.password === password);
-            console.log('🔍 Usuario encontrado:', user);
-            
-            if (user) {
-                currentUser = user;
-                saveCurrentUser(user);
+            try {
+                const user = await loginUser(email, password);
+                
+                // Actualizar interfaz
                 updateUIForLoggedUser(user);
                 
                 // Abrir panel de usuario automáticamente
@@ -3350,8 +3342,8 @@
                 
                 toggleLogin();
                 document.getElementById('loginForm').reset();
-            } else {
-                alert('❌ Email o contraseña incorrectos\n\nPrueba con:\nEmail: test@test.com\nPassword: 123456');
+            } catch (error) {
+                alert(`❌ Error al iniciar sesión: ${error.message}`);
             }
         }
 
@@ -3604,9 +3596,99 @@
 
         // ===== SISTEMA DE USUARIOS Y CUENTAS =====
         
-        // Base de datos local de usuarios (fallback)
-        let users = JSON.parse(localStorage.getItem('tienda_users')) || [];
-        let currentUser = JSON.parse(localStorage.getItem('tienda_current_user')) || null;
+        // Funciones de API para Node.js
+        async function apiRequest(endpoint, options = {}) {
+            const url = `${API_BASE_URL}${endpoint}`;
+            const config = {
+                headers: {
+                    'Content-Type': 'application/json',
+                    ...(authToken && { 'Authorization': `Bearer ${authToken}` })
+                },
+                ...options
+            };
+            
+            try {
+                const response = await fetch(url, config);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || 'Error en la petición');
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('Error en API:', error);
+                throw error;
+            }
+        }
+        
+        // Función de login con Node.js
+        async function loginUser(email, password) {
+            try {
+                const response = await apiRequest('/auth/login', {
+                    method: 'POST',
+                    body: JSON.stringify({ email, password })
+                });
+                
+                currentUser = response.user;
+                authToken = response.token;
+                
+                // Guardar en localStorage
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                localStorage.setItem('authToken', authToken);
+                
+                return currentUser;
+            } catch (error) {
+                throw new Error(error.message);
+            }
+        }
+        
+        // Función de registro con Node.js
+        async function registerUser(userData) {
+            try {
+                const response = await apiRequest('/auth/register', {
+                    method: 'POST',
+                    body: JSON.stringify(userData)
+                });
+                
+                currentUser = response.user;
+                authToken = response.token;
+                
+                // Guardar en localStorage
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                localStorage.setItem('authToken', authToken);
+                
+                return currentUser;
+            } catch (error) {
+                throw new Error(error.message);
+            }
+        }
+        
+        // Función para cargar perfil del usuario
+        async function loadUserProfile() {
+            try {
+                const user = await apiRequest('/user/profile');
+                currentUser = user;
+                return user;
+            } catch (error) {
+                console.error('Error cargando perfil:', error);
+                return null;
+            }
+        }
+        
+        // Función para actualizar perfil
+        async function updateUserProfile(profileData) {
+            try {
+                const user = await apiRequest('/user/profile', {
+                    method: 'PUT',
+                    body: JSON.stringify(profileData)
+                });
+                currentUser = user;
+                return user;
+            } catch (error) {
+                throw new Error(error.message);
+            }
+        }
         
         // 🔍 LOGS DE DEPURACIÓN INICIAL
         console.log('🔍 INICIO DE LA APLICACIÓN:');
