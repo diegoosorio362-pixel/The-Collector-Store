@@ -3312,6 +3312,14 @@
             const password = document.getElementById('password').value;
             const rememberMe = document.getElementById('rememberMe').checked;
             
+            // 🔍 LOGS DE DEPURACIÓN
+            console.log('🔍 DEBUG LOGIN:');
+            console.log('Email:', email);
+            console.log('Password:', password);
+            console.log('Remember Me:', rememberMe);
+            console.log('Email type:', typeof email);
+            console.log('Password type:', typeof password);
+            
             if (!email || !password) {
                 alert('❌ Por favor completa todos los campos');
                 return;
@@ -3704,6 +3712,14 @@
         // Función para autenticar usuario en Supabase
         async function authenticateUserSupabase(email, password) {
             try {
+                // 🔍 LOGS DE DEPURACIÓN SUPABASE
+                console.log('🔍 DEBUG SUPABASE AUTH:');
+                console.log('Email recibido:', email);
+                console.log('Password recibido:', password);
+                console.log('Email length:', email ? email.length : 'undefined');
+                console.log('Password length:', password ? password.length : 'undefined');
+                console.log('Supabase disponible:', !!window.supabase);
+                
                 // Autenticar en Supabase Auth
                 const { data: authData, error: authError } = await window.supabase.auth.signInWithPassword({
                     email: email,
@@ -3997,10 +4013,19 @@
         
         // Función para autenticar usuario
         async function authenticateUser(email, password) {
+            // 🔍 LOGS DE DEPURACIÓN PRINCIPAL
+            console.log('🔍 DEBUG AUTHENTICATE USER:');
+            console.log('Email:', email);
+            console.log('Password:', password);
+            console.log('useSupabase:', useSupabase);
+            console.log('checkSupabase():', checkSupabase());
+            
             // Usar Supabase si está disponible y configurado
             if (useSupabase && checkSupabase()) {
                 try {
+                    console.log('🔍 Usando Supabase para autenticación...');
                     const user = await authenticateUserSupabase(email, password);
+                    console.log('🔍 Usuario autenticado:', user);
                     currentUser = user;
                     saveCurrentUser(user);
                     return user;
@@ -4011,7 +4036,13 @@
             }
             
             // Fallback a localStorage
+            console.log('🔍 Usando localStorage para autenticación...');
+            console.log('🔍 Usuarios disponibles:', users.length);
+            console.log('🔍 Buscando usuario con email:', email);
+            
             const user = users.find(u => u.email === email && u.password === password && u.isActive);
+            console.log('🔍 Usuario encontrado:', user);
+            
             if (user) {
                 currentUser = user;
                 saveCurrentUser(user);
