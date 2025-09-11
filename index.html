@@ -4,6 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Collector Store - ¡Tienda Automática con GitHub Actions!</title>
+    
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            // AQUÍ VA TU CONFIGURACIÓN DE FIREBASE
+            // Reemplaza estos valores con los de tu proyecto
+            apiKey: "tu-api-key",
+            authDomain: "tu-proyecto.firebaseapp.com",
+            projectId: "tu-proyecto-id",
+            storageBucket: "tu-proyecto.appspot.com",
+            messagingSenderId: "123456789",
+            appId: "tu-app-id"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Hacer disponible globalmente
+        window.db = db;
+        window.auth = auth;
+        window.firebaseAuth = { createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut };
+        window.firebaseFirestore = { collection, addDoc, getDocs, doc, updateDoc, deleteDoc };
+        
+        console.log('🔥 Firebase inicializado correctamente');
+    </script>
+    
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -1493,6 +1527,117 @@
             box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
         }
 
+        .admin-btn-secondary {
+            background: linear-gradient(135deg, #6c757d, #495057);
+            font-size: 0.9rem;
+            padding: 0.75rem 1.5rem;
+        }
+
+        .admin-btn-secondary:hover {
+            background: linear-gradient(135deg, #495057, #343a40);
+        }
+
+        /* Estadísticas del panel de admin */
+        .admin-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid #ff6b35;
+        }
+
+        .stat-card h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff6b35;
+        }
+
+        /* Tabla de usuarios */
+        .users-table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        .users-table th {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 1rem 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .users-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #e9ecef;
+            font-size: 0.85rem;
+        }
+
+        .users-table tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        .user-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-small {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-view {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .btn-view:hover {
+            background: #138496;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-edit:hover {
+            background: #e0a800;
+        }
+
+        .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background: #c82333;
+        }
+
         /* Estilos para usuario logueado */
         .user-logged-in {
             position: relative;
@@ -2105,36 +2250,71 @@
             <!-- Tab: Gestión de Usuarios -->
             <div class="admin-tab-content" id="usersTab" style="display: none;">
                 <h4>👥 Gestión de Usuarios</h4>
+                
+                <!-- Estadísticas generales -->
+                <div class="admin-stats">
+                    <div class="stat-card">
+                        <h3>👥 Total Usuarios</h3>
+                        <span class="stat-number" id="totalUsers">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>📦 Total Pedidos</h3>
+                        <span class="stat-number" id="totalOrders">0</span>
+                    </div>
+                    <div class="stat-card">
+                        <h3>💰 Ingresos</h3>
+                        <span class="stat-number" id="totalRevenue">COP $0</span>
+                    </div>
+                </div>
+                
+                <!-- Lista de usuarios -->
                 <div class="admin-section">
+                    <h5>📋 Lista de Usuarios</h5>
+                    <div class="users-table-container">
+                        <table class="users-table" id="usersTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nombre</th>
+                                    <th>Email</th>
+                                    <th>Teléfono</th>
+                                    <th>Ciudad</th>
+                                    <th>Pedidos</th>
+                                    <th>Registro</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody">
+                                <!-- Se llena dinámicamente -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Herramientas de desarrollo (ocultas por defecto) -->
+                <div class="admin-section" id="devTools" style="display: none;">
                     <h5>🔧 Herramientas de Desarrollo</h5>
-                    <p>Estas herramientas te ayudan a probar el sistema de usuarios:</p>
-                    
                     <div class="admin-row">
                         <button class="admin-btn" onclick="createTestUser()">
                             👤 Crear Usuario de Prueba
                         </button>
-                        <button class="admin-btn" onclick="showRegisteredUsers()">
-                            📋 Ver Usuarios Registrados
+                        <button class="admin-btn" onclick="toggleDevTools()">
+                            🔒 Ocultar Herramientas
                         </button>
                     </div>
-                    
-                    <div class="admin-section">
-                        <h5>📝 Usuario de Prueba</h5>
-                        <p><strong>Email:</strong> test@email.com</p>
-                        <p><strong>Contraseña:</strong> 123456</p>
-                        <p><em>Usa estas credenciales para probar el login</em></p>
-                    </div>
-                    
-                    <div class="admin-section">
-                        <h5>💡 Cómo probar el login:</h5>
-                        <ol>
-                            <li>Click en "Crear Usuario de Prueba"</li>
-                            <li>Ve al botón "Iniciar Sesión" (esquina superior)</li>
-                            <li>Ingresa: test@email.com / 123456</li>
-                            <li>¡Login exitoso!</li>
-                        </ol>
-                    </div>
                 </div>
+                
+                <div class="admin-section">
+                    <h5>🔥 Configuración de Firebase</h5>
+                    <p>Estado actual: <span id="firebaseStatus">❌ No configurado</span></p>
+                    <button class="admin-btn admin-btn-secondary" onclick="toggleFirebaseConfig()">
+                        🔧 Configurar Firebase
+                    </button>
+                </div>
+                
+                <button class="admin-btn admin-btn-secondary" onclick="toggleDevTools()">
+                    🔧 Mostrar Herramientas de Desarrollo
+                </button>
             </div>
         </div>
     </div>
@@ -2302,6 +2482,9 @@
             } else {
                 updateUIForGuest();
             }
+            
+            // Inicializar estado de Firebase
+            updateFirebaseStatus();
             
             // Forzar reset del total al cargar la página
             if (domCache.cartTotal) {
@@ -3052,9 +3235,112 @@
 
         // ===== SISTEMA DE USUARIOS Y CUENTAS =====
         
-        // Base de datos local de usuarios
+        // Base de datos local de usuarios (fallback)
         let users = JSON.parse(localStorage.getItem('tienda_users')) || [];
         let currentUser = JSON.parse(localStorage.getItem('tienda_current_user')) || null;
+        
+        // Configuración de Firebase
+        let useFirebase = false; // Cambiar a true cuando configures Firebase
+        
+        // Función para verificar si Firebase está disponible
+        function checkFirebase() {
+            return window.db && window.auth && window.firebaseAuth;
+        }
+        
+        // ===== FUNCIONES DE FIREBASE =====
+        
+        // Función para registrar usuario en Firebase
+        async function registerUserFirebase(userData) {
+            try {
+                const { createUserWithEmailAndPassword } = window.firebaseAuth;
+                const { collection, addDoc } = window.firebaseFirestore;
+                
+                // Crear usuario en Firebase Auth
+                const userCredential = await createUserWithEmailAndPassword(
+                    window.auth, 
+                    userData.email, 
+                    userData.password
+                );
+                
+                const user = userCredential.user;
+                
+                // Crear documento en Firestore
+                const userDoc = {
+                    uid: user.uid,
+                    firstName: userData.firstName,
+                    lastName: userData.lastName,
+                    email: userData.email,
+                    phone: userData.phone || '',
+                    address: userData.address || '',
+                    city: userData.city || '',
+                    postalCode: userData.postalCode || '',
+                    country: userData.country || 'México',
+                    dateRegistered: new Date().toISOString(),
+                    isActive: true,
+                    orders: [],
+                    wishlist: [],
+                    preferences: {
+                        newsletter: false,
+                        notifications: true,
+                        currency: 'COP'
+                    }
+                };
+                
+                await addDoc(collection(window.db, 'users'), userDoc);
+                
+                return { ...userDoc, id: user.uid };
+            } catch (error) {
+                throw new Error('Error al registrar usuario: ' + error.message);
+            }
+        }
+        
+        // Función para autenticar usuario en Firebase
+        async function authenticateUserFirebase(email, password) {
+            try {
+                const { signInWithEmailAndPassword } = window.firebaseAuth;
+                const { collection, getDocs, query, where } = window.firebaseFirestore;
+                
+                // Autenticar en Firebase Auth
+                const userCredential = await signInWithEmailAndPassword(
+                    window.auth, 
+                    email, 
+                    password
+                );
+                
+                const user = userCredential.user;
+                
+                // Obtener datos del usuario de Firestore
+                const q = query(collection(window.db, 'users'), where('uid', '==', user.uid));
+                const querySnapshot = await getDocs(q);
+                
+                if (!querySnapshot.empty) {
+                    const userDoc = querySnapshot.docs[0].data();
+                    return { ...userDoc, id: user.uid };
+                } else {
+                    throw new Error('Usuario no encontrado en la base de datos');
+                }
+            } catch (error) {
+                throw new Error('Error al autenticar usuario: ' + error.message);
+            }
+        }
+        
+        // Función para obtener todos los usuarios de Firebase
+        async function getUsersFirebase() {
+            try {
+                const { collection, getDocs } = window.firebaseFirestore;
+                const querySnapshot = await getDocs(collection(window.db, 'users'));
+                
+                const users = [];
+                querySnapshot.forEach((doc) => {
+                    users.push({ ...doc.data(), id: doc.id });
+                });
+                
+                return users;
+            } catch (error) {
+                console.error('Error al obtener usuarios:', error);
+                return [];
+            }
+        }
         
         // Función para guardar usuarios en localStorage
         function saveUsers() {
@@ -3067,7 +3353,13 @@
         }
         
         // Función para registrar nuevo usuario
-        function registerUser(userData) {
+        async function registerUser(userData) {
+            // Usar Firebase si está disponible y configurado
+            if (useFirebase && checkFirebase()) {
+                return await registerUserFirebase(userData);
+            }
+            
+            // Fallback a localStorage
             // Validar que el email no exista
             if (users.find(u => u.email === userData.email)) {
                 throw new Error('Este email ya está registrado');
@@ -3104,7 +3396,21 @@
         }
         
         // Función para autenticar usuario
-        function authenticateUser(email, password) {
+        async function authenticateUser(email, password) {
+            // Usar Firebase si está disponible y configurado
+            if (useFirebase && checkFirebase()) {
+                try {
+                    const user = await authenticateUserFirebase(email, password);
+                    currentUser = user;
+                    saveCurrentUser(user);
+                    return user;
+                } catch (error) {
+                    console.error('Error de autenticación Firebase:', error);
+                    return null;
+                }
+            }
+            
+            // Fallback a localStorage
             const user = users.find(u => u.email === email && u.password === password && u.isActive);
             if (user) {
                 currentUser = user;
@@ -3385,6 +3691,137 @@
             
             // Activar tab button
             event.target.classList.add('active');
+            
+            // Si es el tab de usuarios, cargar datos
+            if (tabName === 'users') {
+                loadUsersData();
+            }
+        }
+
+        function toggleDevTools() {
+            const devTools = document.getElementById('devTools');
+            const isVisible = devTools.style.display !== 'none';
+            devTools.style.display = isVisible ? 'none' : 'block';
+        }
+
+        function toggleFirebaseConfig() {
+            const config = prompt(`🔥 Configuración de Firebase
+
+Reemplaza estos valores con los de tu proyecto Firebase:
+
+apiKey: "tu-api-key",
+authDomain: "tu-proyecto.firebaseapp.com", 
+projectId: "tu-proyecto-id",
+storageBucket: "tu-proyecto.appspot.com",
+messagingSenderId: "123456789",
+appId: "tu-app-id"
+
+¿Quieres activar Firebase? (sí/no):`);
+
+            if (config && config.toLowerCase().includes('sí')) {
+                useFirebase = true;
+                updateFirebaseStatus();
+                alert('✅ Firebase activado!\n\nAhora necesitas:\n1. Crear proyecto en Firebase\n2. Reemplazar la configuración en el código\n3. Habilitar Authentication y Firestore');
+            }
+        }
+
+        function updateFirebaseStatus() {
+            const statusElement = document.getElementById('firebaseStatus');
+            if (useFirebase && checkFirebase()) {
+                statusElement.textContent = '✅ Configurado y funcionando';
+                statusElement.style.color = '#28a745';
+            } else if (useFirebase) {
+                statusElement.textContent = '⚠️ Activado pero no configurado';
+                statusElement.style.color = '#ffc107';
+            } else {
+                statusElement.textContent = '❌ No configurado';
+                statusElement.style.color = '#dc3545';
+            }
+        }
+
+        function loadUsersData() {
+            // Actualizar estadísticas
+            const totalUsers = users.length;
+            const totalOrders = users.reduce((sum, user) => sum + user.orders.length, 0);
+            const totalRevenue = users.reduce((sum, user) => {
+                return sum + user.orders.reduce((userSum, order) => userSum + order.total, 0);
+            }, 0);
+
+            document.getElementById('totalUsers').textContent = totalUsers;
+            document.getElementById('totalOrders').textContent = totalOrders;
+            document.getElementById('totalRevenue').textContent = formatPrice(totalRevenue);
+
+            // Cargar tabla de usuarios
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '';
+
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.id}</td>
+                    <td>${user.firstName} ${user.lastName}</td>
+                    <td>${user.email}</td>
+                    <td>${user.phone || 'No especificado'}</td>
+                    <td>${user.city || 'No especificado'}</td>
+                    <td>${user.orders.length}</td>
+                    <td>${new Date(user.dateRegistered).toLocaleDateString()}</td>
+                    <td class="user-actions">
+                        <button class="btn-small btn-view" onclick="viewUserDetails(${user.id})">Ver</button>
+                        <button class="btn-small btn-edit" onclick="editUser(${user.id})">Editar</button>
+                        <button class="btn-small btn-delete" onclick="deleteUser(${user.id})">Eliminar</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function viewUserDetails(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            const details = `
+                👤 <strong>${user.firstName} ${user.lastName}</strong>
+                📧 Email: ${user.email}
+                📱 Teléfono: ${user.phone || 'No especificado'}
+                📍 Dirección: ${user.address || 'No especificado'}
+                🏙️ Ciudad: ${user.city || 'No especificado'}
+                📮 Código Postal: ${user.postalCode || 'No especificado'}
+                🌍 País: ${user.country || 'No especificado'}
+                📅 Registrado: ${new Date(user.dateRegistered).toLocaleString()}
+                📦 Pedidos: ${user.orders.length}
+                ❤️ Lista de deseos: ${user.wishlist.length} items
+                📧 Newsletter: ${user.preferences.newsletter ? 'Sí' : 'No'}
+                🔔 Notificaciones: ${user.preferences.notifications ? 'Sí' : 'No'}
+            `;
+
+            alert(`📋 <strong>Detalles del Usuario</strong>\n\n${details}`);
+        }
+
+        function editUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            const newPhone = prompt('Nuevo teléfono:', user.phone || '');
+            if (newPhone !== null) {
+                updateUserProfile(userId, { phone: newPhone });
+                loadUsersData();
+                alert('✅ Usuario actualizado correctamente');
+            }
+        }
+
+        function deleteUser(userId) {
+            const user = users.find(u => u.id === userId);
+            if (!user) return;
+
+            if (confirm(`¿Estás seguro de eliminar a ${user.firstName} ${user.lastName}?\n\nEsta acción no se puede deshacer.`)) {
+                const userIndex = users.findIndex(u => u.id === userId);
+                if (userIndex !== -1) {
+                    users.splice(userIndex, 1);
+                    saveUsers();
+                    loadUsersData();
+                    alert('✅ Usuario eliminado correctamente');
+                }
+            }
         }
 
         function addBulkFromNames() {
