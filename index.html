@@ -3306,7 +3306,7 @@
             if (section) { section.scrollIntoView({ behavior: 'smooth' }); }
         }
         // Funciones de login mejoradas
-        function handleLogin(e) {
+        async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -3318,7 +3318,7 @@
             }
             
             try {
-                const user = authenticateUser(email, password);
+                const user = await authenticateUser(email, password);
                 if (user) {
                     alert(`✅ ¡Bienvenido, ${user.firstName}!\n\nSesión iniciada correctamente`);
                     
@@ -3330,6 +3330,11 @@
                     // Actualizar interfaz para usuario logueado
                     updateUIForLoggedUser(user);
                     
+                    // Abrir panel de usuario automáticamente
+                    setTimeout(() => {
+                        openUserPanel();
+                    }, 1000);
+                    
                     toggleLogin();
                     document.getElementById('loginForm').reset();
                 } else {
@@ -3340,7 +3345,7 @@
             }
         }
 
-        function handleRegister(e) {
+        async function handleRegister(e) {
             e.preventDefault();
             const name = document.getElementById('regName').value;
             const email = document.getElementById('regEmail').value;
@@ -3387,13 +3392,18 @@
                     phone: phone
                 };
                 
-                const newUser = registerUser(userData);
+                const newUser = await registerUser(userData);
                 alert(`✅ ¡Cuenta creada exitosamente!\n\nBienvenido, ${newUser.firstName} ${newUser.lastName}`);
                 
                 // Iniciar sesión automáticamente
                 currentUser = newUser;
                 saveCurrentUser(newUser);
                 updateUIForLoggedUser(newUser);
+                
+                // Abrir panel de usuario automáticamente
+                setTimeout(() => {
+                    openUserPanel();
+                }, 1000);
                 
                 toggleRegister();
                 document.getElementById('registerForm').reset();
