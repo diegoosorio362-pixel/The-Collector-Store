@@ -1147,14 +1147,17 @@
             background: linear-gradient(135deg, #ff6b35, #f7931e);
             color: white;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
+            position: relative;
         }
 
         .gallery-title {
             font-size: 1.5rem;
             font-weight: 700;
             margin: 0;
+            text-align: center;
+            flex: 1;
         }
 
         .gallery-close {
@@ -1170,6 +1173,10 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
         }
 
         .gallery-body {
