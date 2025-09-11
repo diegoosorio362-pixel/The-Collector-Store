@@ -1326,6 +1326,183 @@
         .gallery-body::-webkit-scrollbar-thumb:hover {
             background: linear-gradient(135deg, #f7931e, #ffd700);
         }
+
+        /* Panel de Administración */
+        .admin-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .admin-toggle:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6);
+        }
+
+        .admin-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1001;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-header h3 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .admin-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .admin-tab {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .admin-tab.active {
+            background: white;
+            border-bottom-color: #ff6b35;
+            color: #ff6b35;
+        }
+
+        .admin-tab-content {
+            padding: 2rem;
+        }
+
+        .admin-section {
+            margin-bottom: 1.5rem;
+        }
+
+        .admin-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .admin-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .admin-field label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .admin-field input,
+        .admin-field select,
+        .admin-field textarea {
+            padding: 0.75rem;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .admin-field input:focus,
+        .admin-field select:focus,
+        .admin-field textarea:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .admin-field textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .admin-btn {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .admin-btn:hover {
+            background: linear-gradient(135deg, #f7931e, #ffd700);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .admin-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-content {
+                width: 95%;
+                margin: 1rem;
+            }
+        }
         
         @keyframes slideInUp {
             from {
@@ -1790,6 +1967,101 @@
             </div>
         </div>
     </div>
+
+    <!-- Panel de Administración de Productos -->
+    <div class="admin-panel" id="adminPanel" style="display: none;">
+        <div class="admin-content">
+            <div class="admin-header">
+                <h3>🛠️ Panel de Administración</h3>
+                <button class="admin-close" onclick="toggleAdminPanel()">✕</button>
+            </div>
+            
+            <div class="admin-tabs">
+                <button class="admin-tab active" onclick="showAdminTab('bulk')">Agregar en Lote</button>
+                <button class="admin-tab" onclick="showAdminTab('single')">Agregar Individual</button>
+                <button class="admin-tab" onclick="showAdminTab('import')">Importar JSON</button>
+            </div>
+            
+            <!-- Tab: Agregar en Lote -->
+            <div class="admin-tab-content" id="bulkTab">
+                <h4>📦 Agregar Múltiples Figuras</h4>
+                <div class="admin-section">
+                    <label>Nombres de las figuras (uno por línea):</label>
+                    <textarea id="bulkNames" placeholder="Goku Super Saiyan&#10;Vegeta SSJ2&#10;Piccolo&#10;Gohan SSJ"></textarea>
+                </div>
+                <div class="admin-row">
+                    <div class="admin-field">
+                        <label>Categoría:</label>
+                        <select id="bulkCategory">
+                            <option value="wcf">WCF</option>
+                            <option value="gashapon">Gashapon</option>
+                            <option value="wcf-custom">WCF Custom</option>
+                            <option value="replicas">Réplicas</option>
+                            <option value="originales">Originales</option>
+                        </select>
+                    </div>
+                    <div class="admin-field">
+                        <label>Precio base (USD):</label>
+                        <input type="number" id="bulkPrice" value="15" step="0.01">
+                    </div>
+                </div>
+                <button class="admin-btn" onclick="addBulkFromNames()">Agregar Figuras</button>
+            </div>
+            
+            <!-- Tab: Agregar Individual -->
+            <div class="admin-tab-content" id="singleTab" style="display: none;">
+                <h4>➕ Agregar Figura Individual</h4>
+                <div class="admin-form">
+                    <div class="admin-row">
+                        <div class="admin-field">
+                            <label>Nombre:</label>
+                            <input type="text" id="singleName" placeholder="Nombre de la figura">
+                        </div>
+                        <div class="admin-field">
+                            <label>Precio (USD):</label>
+                            <input type="number" id="singlePrice" value="15" step="0.01">
+                        </div>
+                    </div>
+                    <div class="admin-row">
+                        <div class="admin-field">
+                            <label>Categoría:</label>
+                            <select id="singleCategory">
+                                <option value="wcf">WCF</option>
+                                <option value="gashapon">Gashapon</option>
+                                <option value="wcf-custom">WCF Custom</option>
+                                <option value="replicas">Réplicas</option>
+                                <option value="originales">Originales</option>
+                            </select>
+                        </div>
+                        <div class="admin-field">
+                            <label>Imagen principal:</label>
+                            <input type="text" id="singleImage" placeholder="nombre_imagen.jpg">
+                        </div>
+                    </div>
+                    <div class="admin-field">
+                        <label>Descripción:</label>
+                        <textarea id="singleDescription" placeholder="Descripción de la figura"></textarea>
+                    </div>
+                    <button class="admin-btn" onclick="addSingleProduct()">Agregar Figura</button>
+                </div>
+            </div>
+            
+            <!-- Tab: Importar JSON -->
+            <div class="admin-tab-content" id="importTab" style="display: none;">
+                <h4>📄 Importar desde JSON</h4>
+                <div class="admin-section">
+                    <label>Pegar JSON de productos:</label>
+                    <textarea id="jsonImport" placeholder='[{"name": "Goku", "price": 15, "category": "wcf", "image": "goku.jpg"}]'></textarea>
+                </div>
+                <button class="admin-btn" onclick="importFromJSON()">Importar Productos</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Botón flotante para abrir panel de administración -->
+    <button class="admin-toggle" onclick="toggleAdminPanel()" title="Panel de Administración">
+        ⚙️
+    </button>
 
     <footer class="footer">
         <div class="container">
@@ -2660,6 +2932,211 @@
                 closeProductGallery();
             }
         });
+
+        // ===== FUNCIONES PARA AGREGAR PRODUCTOS EN LOTE =====
+        
+        // Función para agregar múltiples productos de una vez
+        function addBulkProducts(newProducts) {
+            // Obtener el siguiente ID disponible
+            let nextId = Math.max(...products.map(p => p.id)) + 1;
+            
+            // Agregar IDs a los nuevos productos
+            newProducts.forEach(product => {
+                if (!product.id) {
+                    product.id = nextId++;
+                }
+                // Agregar características por defecto si no existen
+                if (!product.characteristics) {
+                    product.characteristics = {
+                        material: "PVC de alta calidad",
+                        altura: "8-10 cm",
+                        pintura: "Pintura oficial",
+                        detalles: "Detalles únicos",
+                        base: "Base incluida",
+                        edicion: "Edición estándar",
+                        estado: "Nuevo en caja",
+                        garantia: "Garantía de 30 días"
+                    };
+                }
+            });
+            
+            // Agregar a la lista de productos
+            products.push(...newProducts);
+            
+            // Recargar productos y actualizar contadores
+            loadProducts();
+            updateFilterCounts();
+            
+            console.log(`✅ Se agregaron ${newProducts.length} productos exitosamente`);
+            return newProducts.length;
+        }
+
+        // Función para agregar productos desde un array simple
+        function addProductsFromArray(productData) {
+            const newProducts = productData.map((item, index) => ({
+                id: 0, // Se asignará automáticamente
+                name: item.name || `Figura ${index + 1}`,
+                description: item.description || "Figura coleccionable de alta calidad",
+                price: item.price || 15.00,
+                image: item.image || "Dragon Ball.jpg",
+                images: item.images || [item.image || "Dragon Ball.jpg"],
+                category: item.category || "wcf",
+                characteristics: item.characteristics || {
+                    material: "PVC de alta calidad",
+                    altura: item.altura || "8-10 cm",
+                    pintura: "Pintura oficial",
+                    detalles: item.detalles || "Detalles únicos",
+                    base: "Base incluida",
+                    edicion: item.edicion || "Edición estándar",
+                    estado: "Nuevo en caja",
+                    garantia: "Garantía de 30 días"
+                }
+            }));
+            
+            return addBulkProducts(newProducts);
+        }
+
+        // Función para crear productos desde nombres simples
+        function createProductsFromNames(names, category = "wcf", basePrice = 15.00) {
+            const newProducts = names.map((name, index) => ({
+                name: name,
+                description: `Figura ${category.toUpperCase()} de ${name} - Colección oficial`,
+                price: basePrice + (index * 2), // Precio incremental
+                image: `${name.replace(/\s+/g, '_').toLowerCase()}.jpg`,
+                images: [
+                    `${name.replace(/\s+/g, '_').toLowerCase()}_frente.jpg`,
+                    `${name.replace(/\s+/g, '_').toLowerCase()}_espalda.jpg`
+                ],
+                category: category,
+                characteristics: {
+                    material: "PVC de alta calidad",
+                    altura: "8-10 cm",
+                    pintura: "Pintura oficial",
+                    detalles: `Detalles únicos de ${name}`,
+                    base: "Base transparente incluida",
+                    edicion: "Edición limitada",
+                    estado: "Nuevo en caja original",
+                    garantia: "Garantía de 30 días"
+                }
+            }));
+            
+            return addBulkProducts(newProducts);
+        }
+
+        // ===== FUNCIONES DEL PANEL DE ADMINISTRACIÓN =====
+        
+        function toggleAdminPanel() {
+            const panel = document.getElementById('adminPanel');
+            panel.style.display = panel.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        function showAdminTab(tabName) {
+            // Ocultar todos los tabs
+            document.querySelectorAll('.admin-tab-content').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            
+            // Remover clase active de todos los tabs
+            document.querySelectorAll('.admin-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Mostrar tab seleccionado
+            document.getElementById(tabName + 'Tab').style.display = 'block';
+            
+            // Activar tab button
+            event.target.classList.add('active');
+        }
+
+        function addBulkFromNames() {
+            const namesText = document.getElementById('bulkNames').value;
+            const category = document.getElementById('bulkCategory').value;
+            const basePrice = parseFloat(document.getElementById('bulkPrice').value);
+            
+            if (!namesText.trim()) {
+                alert('⚠️ Por favor ingresa al menos un nombre de figura');
+                return;
+            }
+            
+            const names = namesText.split('\n').filter(name => name.trim());
+            const added = createProductsFromNames(names, category, basePrice);
+            
+            alert(`✅ Se agregaron ${added} figuras exitosamente`);
+            
+            // Limpiar formulario
+            document.getElementById('bulkNames').value = '';
+        }
+
+        function addSingleProduct() {
+            const name = document.getElementById('singleName').value;
+            const price = parseFloat(document.getElementById('singlePrice').value);
+            const category = document.getElementById('singleCategory').value;
+            const image = document.getElementById('singleImage').value;
+            const description = document.getElementById('singleDescription').value;
+            
+            if (!name.trim()) {
+                alert('⚠️ Por favor ingresa el nombre de la figura');
+                return;
+            }
+            
+            const newProduct = {
+                name: name,
+                description: description || `Figura ${category.toUpperCase()} de ${name} - Colección oficial`,
+                price: price,
+                image: image || `${name.replace(/\s+/g, '_').toLowerCase()}.jpg`,
+                images: [
+                    image || `${name.replace(/\s+/g, '_').toLowerCase()}.jpg`,
+                    `${name.replace(/\s+/g, '_').toLowerCase()}_espalda.jpg`
+                ],
+                category: category,
+                characteristics: {
+                    material: "PVC de alta calidad",
+                    altura: "8-10 cm",
+                    pintura: "Pintura oficial",
+                    detalles: `Detalles únicos de ${name}`,
+                    base: "Base transparente incluida",
+                    edicion: "Edición limitada",
+                    estado: "Nuevo en caja original",
+                    garantia: "Garantía de 30 días"
+                }
+            };
+            
+            const added = addBulkProducts([newProduct]);
+            alert(`✅ Se agregó "${name}" exitosamente`);
+            
+            // Limpiar formulario
+            document.getElementById('singleName').value = '';
+            document.getElementById('singleDescription').value = '';
+            document.getElementById('singleImage').value = '';
+        }
+
+        function importFromJSON() {
+            const jsonText = document.getElementById('jsonImport').value;
+            
+            if (!jsonText.trim()) {
+                alert('⚠️ Por favor pega el JSON de productos');
+                return;
+            }
+            
+            try {
+                const productData = JSON.parse(jsonText);
+                
+                if (!Array.isArray(productData)) {
+                    alert('⚠️ El JSON debe ser un array de productos');
+                    return;
+                }
+                
+                const added = addProductsFromArray(productData);
+                alert(`✅ Se importaron ${added} productos exitosamente`);
+                
+                // Limpiar formulario
+                document.getElementById('jsonImport').value = '';
+                
+            } catch (error) {
+                alert('❌ Error en el JSON: ' + error.message);
+            }
+        }
+
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
