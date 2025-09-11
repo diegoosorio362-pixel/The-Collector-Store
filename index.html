@@ -2025,6 +2025,7 @@
                 <button class="admin-tab active" onclick="showAdminTab('bulk')">Agregar en Lote</button>
                 <button class="admin-tab" onclick="showAdminTab('single')">Agregar Individual</button>
                 <button class="admin-tab" onclick="showAdminTab('import')">Importar JSON</button>
+                <button class="admin-tab" onclick="showAdminTab('users')">Usuarios</button>
             </div>
             
             <!-- Tab: Agregar en Lote -->
@@ -2099,6 +2100,41 @@
                     <textarea id="jsonImport" placeholder='[{"name": "Goku", "price": 15, "category": "wcf", "image": "goku.jpg"}]'></textarea>
                 </div>
                 <button class="admin-btn" onclick="importFromJSON()">Importar Productos</button>
+            </div>
+            
+            <!-- Tab: Gestión de Usuarios -->
+            <div class="admin-tab-content" id="usersTab" style="display: none;">
+                <h4>👥 Gestión de Usuarios</h4>
+                <div class="admin-section">
+                    <h5>🔧 Herramientas de Desarrollo</h5>
+                    <p>Estas herramientas te ayudan a probar el sistema de usuarios:</p>
+                    
+                    <div class="admin-row">
+                        <button class="admin-btn" onclick="createTestUser()">
+                            👤 Crear Usuario de Prueba
+                        </button>
+                        <button class="admin-btn" onclick="showRegisteredUsers()">
+                            📋 Ver Usuarios Registrados
+                        </button>
+                    </div>
+                    
+                    <div class="admin-section">
+                        <h5>📝 Usuario de Prueba</h5>
+                        <p><strong>Email:</strong> test@email.com</p>
+                        <p><strong>Contraseña:</strong> 123456</p>
+                        <p><em>Usa estas credenciales para probar el login</em></p>
+                    </div>
+                    
+                    <div class="admin-section">
+                        <h5>💡 Cómo probar el login:</h5>
+                        <ol>
+                            <li>Click en "Crear Usuario de Prueba"</li>
+                            <li>Ve al botón "Iniciar Sesión" (esquina superior)</li>
+                            <li>Ingresa: test@email.com / 123456</li>
+                            <li>¡Login exitoso!</li>
+                        </ol>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -3284,9 +3320,45 @@
         // Función para cerrar sesión
         function logoutUser() {
             if (confirm('¿Estás seguro de que quieres cerrar sesión?')) {
-                logoutUser();
+                currentUser = null;
+                localStorage.removeItem('tienda_current_user');
                 updateUIForGuest();
                 alert('👋 ¡Hasta luego!');
+            }
+        }
+        
+        // Función para mostrar usuarios registrados (solo para desarrollo)
+        function showRegisteredUsers() {
+            if (users.length === 0) {
+                alert('📝 No hay usuarios registrados aún\n\n¡Crea tu primera cuenta!');
+                return;
+            }
+            
+            let usersText = '👥 <strong>Usuarios Registrados</strong>\n\n';
+            users.forEach((user, index) => {
+                usersText += `${index + 1}. ${user.firstName} ${user.lastName}\n`;
+                usersText += `   📧 ${user.email}\n`;
+                usersText += `   📅 Registrado: ${new Date(user.dateRegistered).toLocaleDateString()}\n`;
+                usersText += `   📦 Pedidos: ${user.orders.length}\n\n`;
+            });
+            
+            alert(usersText);
+        }
+        
+        // Función para crear usuario de prueba
+        function createTestUser() {
+            try {
+                const testUser = registerUser({
+                    firstName: 'Usuario',
+                    lastName: 'Prueba',
+                    email: 'test@email.com',
+                    password: '123456',
+                    phone: '+57 300 000 0000'
+                });
+                
+                alert(`✅ Usuario de prueba creado:\n\nEmail: test@email.com\nContraseña: 123456\n\n¡Ya puedes hacer login!`);
+            } catch (error) {
+                alert('❌ Error: ' + error.message);
             }
         }
 
