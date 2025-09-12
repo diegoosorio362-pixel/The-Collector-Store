@@ -20,12 +20,17 @@ Una tienda online completa construida con Node.js, Express, MongoDB y frontend H
 
 ## 🛠️ Instalación
 
-### 1. Instalar dependencias
+### 1. Instalar Node.js
+- Descargar desde: https://nodejs.org/
+- Instalar la versión LTS (recomendada)
+- Reiniciar terminal después de instalar
+
+### 2. Instalar dependencias
 ```bash
 npm install
 ```
 
-### 2. Configurar MongoDB
+### 3. Configurar MongoDB
 - **Opción A: MongoDB Local**
   - Instalar MongoDB en tu sistema
   - Asegúrate de que esté corriendo en `mongodb://localhost:27017`
@@ -35,14 +40,6 @@ npm install
   - Crear un cluster gratuito
   - Obtener la cadena de conexión
   - Actualizar `MONGODB_URI` en `config.env`
-
-### 3. Configurar variables de entorno
-Editar el archivo `config.env`:
-```env
-PORT=3000
-MONGODB_URI=mongodb://localhost:27017/mi-tienda
-JWT_SECRET=tu-secreto-super-seguro
-```
 
 ### 4. Iniciar el servidor
 ```bash
